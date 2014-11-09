@@ -31,7 +31,7 @@
     <div class="row">
         
         <!-- left menu starts -->
-        <div class="col-sm-2 col-lg-2">
+        <div class="col-sm-2 col-lg-2" id="sidebar">
             
             <?php echo $sidebar; ?>
 

@@ -44,7 +44,7 @@
             <!-- theme selector ends -->
 
             <ul class="collapse navbar-collapse nav navbar-nav top-menu">
-                <li><a href="#"><i class="glyphicon glyphicon-globe"></i> Visit Site</a></li>
+                <li><a href="#" id="hide-sidebar"><i class="glyphicon glyphicon-align-justify"></i> Hide Sidebar</a></li>
                 <li class="dropdown">
                     <a href="#" data-toggle="dropdown"><i class="glyphicon glyphicon-star"></i> Dropdown <span
                             class="caret"></span></a>

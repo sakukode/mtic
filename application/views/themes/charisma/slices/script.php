@@ -9,11 +9,13 @@
 <?php echo add_js('charisma/bower_components/fullcalendar/dist/fullcalendar.min'); ?>
 <!-- data table plugin -->
 <?php echo add_js('charisma/js/jquery.dataTables.min');?>
-
 <!-- select or dropdown enhancer -->
 <?php echo add_js('charisma/bower_components/chosen/chosen.jquery.min');?>
+<?php echo add_js('charisma/bower_components/chosen/chosen.ajaxaddition.jquery');?>
 <!-- plugin for gallery image view -->
 <?php echo add_js('charisma/bower_components/colorbox/jquery.colorbox-min');?>
+<!-- plugin for datepicker -->
+<?php echo add_js('charisma/js/bootstrap-datepicker');?>
 <!-- notification plugin -->
 <?php echo add_js('charisma/js/jquery.noty');?>
 <!-- library for making tables responsive -->

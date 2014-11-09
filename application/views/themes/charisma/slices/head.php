@@ -17,6 +17,7 @@
             'charisma/bower_components/responsive-tables/responsive-tables',
             'charisma/bower_components/bootstrap-tour/build/css/bootstrap-tour.min',
             'charisma/css/jquery.noty',
+            'charisma/css/datepicker',
             'charisma/css/noty_theme_default',
             'charisma/css/elfinder.min',
             'charisma/css/elfinder.theme',
@@ -40,3 +41,30 @@
 
     <!-- The fav icon -->
     <link rel="shortcut icon" href="<?php echo base_url();?>assets/charisma/img/favicon.ico">
+
+    <style type="text/css">
+    .label-custom {
+        text-align: left !important;
+        padding-left:20px !important;
+    }
+    .chosen-container-single .chosen-single {
+    height: 38px;
+    border-radius: 3px;
+    border: 1px solid #CCCCCC;
+    }
+    .chosen-container-single .chosen-single span {
+        padding-top: 5px;
+    }
+    .chosen-container-single .chosen-single div b {
+        margin-top: 4px;
+    }
+    .chosen-container-active .chosen-single,
+    .chosen-container-active.chosen-with-drop .chosen-single {
+        border-color: #ccc;
+        border-color: rgba(82, 168, 236, .8);
+        outline: 0;
+        outline: thin dotted \9;
+        -moz-box-shadow: 0 0 8px rgba(82, 168, 236, .6);
+        box-shadow: 0 0 8px rgba(82, 168, 236, .6)
+    }
+    </style>

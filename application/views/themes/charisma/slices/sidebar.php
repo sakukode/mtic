@@ -1,7 +1,7 @@
 <div class="sidebar-nav">
                 <div class="nav-canvas">
                     <div class="nav-sm nav nav-stacked">
-
+                        
                     </div>
                     <ul class="nav nav-pills nav-stacked main-menu">
                         <li class="nav-header">Main</li>

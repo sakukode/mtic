@@ -3,7 +3,7 @@ $(document).ready(function () {
     //default theme(CSS) is cerulean, change it if needed
     var defaultTheme = 'cerulean';
 
-    var baseAssets = "http://localhost/charisma/assets/charisma/";
+    var baseAssets = window.location.protocol + "//" + window.location.host + "/charisma/assets/charisma/";
 
     var currentTheme = $.cookie('currentTheme') == null ? defaultTheme : $.cookie('currentTheme');
     var msie = navigator.userAgent.match(/msie/i);

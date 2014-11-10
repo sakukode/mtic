@@ -25,9 +25,18 @@
                 </div>
             </div>
             <div class="box-content">
+                
+                <?php if($this->session->flashdata('msgsuccess')): ?>
+                <div class="alert alert-success"><?php echo $this->session->flashdata('msgsuccess');?></div>
+                <?php endif; ?>
+
+                <?php if($this->session->flashdata('msgerror')): ?>
+                <div class="alert alert-danger"><?php echo $this->session->flashdata('msgerror');?></div>
+                <?php endif; ?>
+
                 <h3>Master Quotation</h3>
                 <hr>
-                <form class="form-horizontal">
+                <form class="form-horizontal" method="POST" action="<?php echo site_url('quotation/save_master');?>" id="form-quotation">
                     <div class="form-group">
                         <label class="col-sm-2 control-label label-custom">Group Sales</label>
                         <div class="col-sm-3">
@@ -45,19 +54,19 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label label-custom">No Quotation</label>
                         <div class="col-sm-1">
-                            <input type="text" class="form-control" value="<?php echo $no;?>" readonly name="no-quotation-1">
+                            <input type="text" class="form-control" value="<?php echo $no;?>" readonly name="no-quotation[]">
                         </div>
                          <div class="col-sm-2">
-                            <input type="text" class="form-control" readonly value="MTI-MRK" name="no-quotation-2">
+                            <input type="text" class="form-control" readonly value="MTI-MRK" name="no-quotation[]">
                         </div>
                          <div class="col-sm-2">
-                            <input type="text" class="form-control" readonly id="no-quotation-3">
+                            <input type="text" class="form-control" readonly id="no-quotation-3" name="no-quotation[]">
                         </div>
                         <div class="col-sm-1">
-                            <input type="text" class="form-control" readonly id="no-quotation-4">
+                            <input type="text" class="form-control" readonly id="no-quotation-4" name="no-quotation[]">
                         </div>
                         <div class="col-sm-2">
-                            <input type="text" class="form-control" readonly id="no-quotation-5">
+                            <input type="text" class="form-control" readonly id="no-quotation-5" name="no-quotation[]">
                         </div>
                     </div>
                     <div class="form-group">
@@ -108,6 +117,12 @@
                         <label class="col-sm-2 control-label label-custom">Email</label>
                         <label class="col-sm-5 control-label label-custom text-info" id="email"></label>
                     </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label label-custom">Terms & Condition</label>
+                        <div class="col-sm-8">
+                            <textarea class="form-control" rows="5" readonly name="terms"><?php echo $terms; ?></textarea>
+                        </div>
+                    </div>
 
                 <!-- detail transaction -->
                 
@@ -126,8 +141,11 @@
                     <tbody>
                         <tr>
                             <td>
-                                <select class="form-control combo-detail" data-placeholder="Choose a Option" id="type-product" name="type-product">
+                                <select class="form-control combo-detail" data-rel="chosen" data-placeholder="Choose a Option" id="type-product" name="type-product">
                                     <option value=""></option>
+                                    <option value="PRODUCT">PRODUCT</option>
+                                    <option value="PART">PART</option>
+                                    <option value="MATERIAL">MATERIAL</option>
                                 </select>
                             </td>
                             <td>
@@ -159,8 +177,8 @@
                     <tbody>
                         <tr>
                             <td>
-                                <select class="form-control input-detail" data-placeholder="Choose a Option" name="disc-option" id="disc-option">
-                                    <option value="" disabled selected>Choose a Option</option>
+                                <select class="form-control combo-detail" data-placeholder="Choose a Option" name="disc-option" id="disc-option" data-rel="chosen">
+                                    <option value=""></option>
                                     <option value="amount">Amount</option>
                                     <option value="percent">Percent %</option>
                                 </select>
@@ -217,27 +235,28 @@
                     <div class="col-sm-6"></div>
                     <label class="col-sm-2 control-label label-custom">Discount</label>
                         <div class="col-sm-4">
-                            <input type="text" class="form-control" name="discount-hdr">
+                            <input type="text" class="form-control input-number" name="discount-hdr" id="discount-hdr" onkeyup="totalHdr(this.value)">
                     </div>
                 </div>
                  <div class="form-group">
                     <div class="col-sm-6"></div>
-                    <label class="col-sm-2 control-label label-custom">PPN</label>
+                    <label class="col-sm-2 control-label label-custom">PPN (10%)</label>
                         <div class="col-sm-4">
-                            <input type="text" class="form-control" name="ppn">
+                            <input type="text" class="form-control" name="ppn" readonly id="ppn">
                     </div>
                 </div>
                  <div class="form-group">
                     <div class="col-sm-6"></div>
                     <label class="col-sm-2 control-label label-custom">Total</label>
                         <div class="col-sm-4">
-                            <input type="text" class="form-control" name="total" value="0" readonly>
+                            <input type="text" class="form-control" name="total" value="0" readonly id="total">
                     </div>
                 </div>
                 <hr>
                 <div class="box-footer">
-                    <button class="btn btn-success">Save Quotation</button>
+                    <button class="btn btn-success" type="submit">Save Quotation</button>
                 </div>
+                </form>
             </div>
         </div>
     </div>
@@ -329,6 +348,7 @@ $(function() {
         loadingImg: "<?php echo base_url('assets/charisma/bower_components/chosen/loading.gif');?>"
     });
 
+  
 
     /* generate no quotation */
 
@@ -400,14 +420,6 @@ $(function() {
 
     /* get data for combo box quotation detail */
 
-    $("#type-product").ajaxChosen({
-        dataType: 'json',
-        type: 'POST',
-        url:"<?php echo site_url('quotation/get_typeproduct');?>"
-    },{
-        loadingImg: "<?php echo base_url('assets/charisma/bower_components/chosen/loading.gif');?>",
-    });
-
     $("#type-chasis").ajaxChosen({
         dataType: 'json',
         type: 'POST',
@@ -418,21 +430,21 @@ $(function() {
 
     $("#type-product").change(function() {
         /* Act on the event */
-        var id = $(this).val();
+        var type = $(this).val();
 
-        if(id != null) {
+        if(type != null) {
             $.ajax({
                 url: "<?php echo site_url('quotation/get_product');?>",
                 type: 'GET',
                 dataType: 'json',
-                data: {id: id},
+                data: {type: type},
                 success: function(data) {
                         $("#item").empty();
                         $("#item").append('<option value="" disabled selected>Choose a Option</option>');
                         $(data).each(function()
                         {
                             var option = $('<option />');
-                            option.attr('value', this.productid).text(this.producttype+'-'+this.productvariant+'-'+this.productsize);
+                            option.attr('value', this.productid).text(this.producttype+' '+this.productvariant+' '+this.productsize);
 
                             $('#item').append(option);
                         });
@@ -496,6 +508,61 @@ $(function() {
         }
     });
 
+    /* submit form quotation header */
+
+    $("#form-quotation").submit(function(event) {
+        /* Act on the event */
+        event.preventDefault();
+
+        var productidArray = [];
+            chasisidArray  = [];
+            drawidArray    = [];
+
+        $('input[name^="productid"]').each(function() {
+          productidArray.push($(this).val());
+        });
+
+        $('input[name^="chasisid"]').each(function() {
+          chasisidArray.push($(this).val());
+        });
+
+        $('input[name^="drawid"]').each(function() {
+          drawidArray.push($(this).val());
+        });
+
+        var firstsCellArray=[];
+        var secondCellArray=[];
+
+        $.each( oTable.fnGetData(), function(i, row){
+          secondCellArray.push(chasisidArray[i]);  //index 0
+          secondCellArray.push(productidArray[i]); //index 1
+          secondCellArray.push(row[3]); //index 2
+          secondCellArray.push(row[4]); //index 3
+          secondCellArray.push(row[5]); //index 4
+          secondCellArray.push(row[6]); //index 5
+          secondCellArray.push(row[7]); //index 6
+          secondCellArray.push(row[8]); //index 7
+          secondCellArray.push(drawidArray[i]); //index 8
+
+          firstsCellArray.push(secondCellArray);
+
+          secondCellArray = [];
+
+        });
+
+        $.post(this.action, $(this).serialize(), function(data, textStatus, xhr) {
+            /*optional stuff to do after success */
+            var lastid = data.lastid;
+            if(lastid != ''){
+                
+                $.post("<?php echo site_url('quotation/save_detail');?>",{data:firstsCellArray,quotationid:lastid},function(){
+                    location.reload();
+                }); 
+            
+            }
+        },"json");
+    });
+
 });
 
 function subtotal(qty){
@@ -523,18 +590,25 @@ function subtotal(qty){
 
 
 function addList() {
-    var id = $("#product-id").val();
+    var productID = $("#item").val();
+        chasisID  = $("#type-chasis").val();
+        drawID    = $("#drawing").val();
+
+        inputProduct = '<input type="hidden" value="'+productID+'" name="productid[]">';
+        inputChasis  = '<input type="hidden" value="'+chasisID+'" name="chasisid[]">';
+        inputDraw    = '<input type="hidden" value="'+drawID+'" name="drawid[]">';
+
     $('#table-detail').dataTable().fnAddData( [
         $('#type-product option:selected').text(),
-        $('#type-chasis option:selected').text(),
-        $('#item option:selected').text(),
+        inputChasis+$('#type-chasis option:selected').text(),
+        inputProduct+$('#item option:selected').text(),
         $('#item-price').val(),
         $('#qty').val(),
         $('#disc-option').val(),
         $('#discount').val(),
         $('#amount').val(),
         $('#remarks').val(),
-        $('#drawing option:selected').text(),
+        inputDraw+$('#drawing option:selected').text(),
          ] );
    
     clearFormDetail();
@@ -558,8 +632,32 @@ function getTotal(){
      if(!isNaN(tothrg)) {
         $("#sub-total").val(tothrg);   
      }
-     
+
+     var ppn = 10/100 * tothrg;
+
+     if(!isNaN(ppn)) {
+        $("#ppn").val(ppn);
+     }
+
+     var disc = $("#discount-hdr").val();
+
+     totalHdr(disc);     
 }
+
+function totalHdr(disc) {
+
+    var subTotal = $("#sub-total").val();
+        ppn      = 10/100 * parseInt(subTotal);
+
+    if(disc != '') {
+        var total = parseInt(subTotal) - ppn - disc;
+
+        if(!isNaN(total)) {
+            $("#total").val(total);
+        }    
+    }
+    
+ }
 
 /* Get the rows which are currently selected */
 function fnGetSelected( oTableLocal )

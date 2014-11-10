@@ -28,6 +28,10 @@ class Quotation extends CI_Controller {
 			$data['no'] = 1;
 		}
 
+		$data['terms'] = "1. Payment  : 14 Days after confirmation PO
+2. Delivery : Total lead time for 2 months after confirmation / Purchase Order
+3. Validity : One month after this quotation,the price can be change anytime without prior notice";
+
 		$this->stencil->data($data);
 		$this->stencil->title('Quotation');
 
@@ -102,23 +106,6 @@ class Quotation extends CI_Controller {
 		
 	}
 
-	public function get_typeproduct()
-	{
-		$q = $_POST['data']['q'];
-
-		$groups = $this->m_quotation->get_typeproduct($q);
-
-		$results = array();
-		if($groups != null){
-			foreach($groups as $row){
-				$results[] = array('id' => $row->MstTypeProductID, 'text' => $row->MstTypeProductName);
-			}
-		}
-
-		echo json_encode(array('q' => $q, 'results' => $results));	
-		
-	}
-
 	public function get_typechasis()
 	{
 		$q = $_POST['data']['q'];
@@ -128,7 +115,7 @@ class Quotation extends CI_Controller {
 		$results = array();
 		if($groups != null){
 			foreach($groups as $row){
-				$text = $row->MStChasMaker.'-'.$row->MStChasModel;
+				$text = $row->MStChasMaker.' '.$row->MStChasModel.' '.$row->MstChasType;
 				$results[] = array('id' => $row->MstChasID, 'text' => $text);
 			}
 		}
@@ -182,9 +169,9 @@ class Quotation extends CI_Controller {
 
 	public function get_product()
 	{
-		$id_type = $_GET['id'];
+		$type = $_GET['type'];
 
-		$result = $this->m_quotation->get_product($id_type);
+		$result = $this->m_quotation->get_product($type);
 
 		echo json_encode($result);
 	}
@@ -203,6 +190,30 @@ class Quotation extends CI_Controller {
 			);
 
 			echo json_encode($data);
+		}
+	}
+
+	public function save_master()
+	{
+		$result = $this->m_quotation->save_master();
+
+		$data = array(
+			'lastid' => $result,
+		);
+
+		echo json_encode($data);
+	}
+
+	public function save_detail()
+	{
+		$id = $this->m_quotation->save_detail();
+
+		if($id != '')
+		{
+			$this->session->set_flashdata('msgsuccess', 'Succesfully created Quotation');
+
+		}else {
+			$this->session->set_flashdata('msgerror', 'Failed saved');
 		}
 	}
 

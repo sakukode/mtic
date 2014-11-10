@@ -63,24 +63,9 @@ class M_quotation extends CI_Model {
 		}
 	}
 
-	public function get_typeproduct($key)
-	{
-		$query = $this->db->select('*')
-						  ->like('MstTypeProductName',$key)
-						  ->get('msttypeproduct');
-
-		if($query->num_rows() > 0)
-		{
-			return $query->result();
-		}else
-		{
-			return NULL;
-		}
-	}
-
 	public function get_typechasis($key)
 	{
-		$query = $this->db->select('MstChasID,MstChasNo,MStChasMaker,MStChasModel')
+		$query = $this->db->select('MstChasID,MStChasMaker,MStChasModel,MstChasType')
 						  ->like('MStChasMaker',$key)
 						  ->get('mstchas');
 
@@ -134,11 +119,11 @@ class M_quotation extends CI_Model {
 		}
 	}
 
-	public function get_product($id_type)
+	public function get_product($type)
 	{
 		$query = $this->db->select('MstProductID as productid,MstProductType as producttype,MstProductVariant as productvariant,MstProductGroupingSize as productsize')
 						  ->from('mstproduct')
-						  ->where('MstTypeProductID',$id_type)
+						  ->where('MstProductTypeProduct',$type)
 						  ->get();
 
 		 if ($query->num_rows() > 0) { 
@@ -163,8 +148,98 @@ class M_quotation extends CI_Model {
 		{
 			return null;
 		}
-
 	}
+
+	public function save_master()
+	{
+		$groupsales_id 	= $this->input->post('group-sales',TRUE);
+		$typeorder_id 	= $this->input->post('type-order',TRUE);
+		$date       	= $this->input->post('date-quotation',TRUE);
+		$customer_id	= $this->input->post('customer',TRUE);
+		$remarks		= $this->input->post('remarks',TRUE);
+		$sales_id		= $this->input->post('sales',TRUE);
+		$terms			= $this->input->post('terms',TRUE);
+		$no_array	 	= $this->input->post('no-quotation',TRUE);
+		$no 			= $no_array[0].'/'.$no_array[1].'/'.$no_array[2].'/'.$no_array[3].'/'.$no_array[4];
+
+		$subtotal		= $this->input->post('sub-total',TRUE);
+		$discount		= $this->input->post('discount-hdr',TRUE);
+		$ppn 			= $this->input->post('ppn',TRUE);
+		$total 			= $this->input->post('total',TRUE);
+
+		$data = array(
+			'TxnQuotHdrID' 		=> null,
+			'TxnQuotHdrNo' 		=> strip_tags($no,ENT_QUOTES),
+			'TxnQuotHdrDate'	=> strip_tags($date,ENT_QUOTES),
+			'TxnQuotHdrTermsTxt'=> htmlspecialchars($terms,ENT_QUOTES,"UTF-8"),
+			'TxnQuotHdrDiscount'=> strip_tags($discount,ENT_QUOTES),
+			'TxnQuotHdrPpn'  	=> strip_tags($ppn,ENT_QUOTES),
+			'TxnQuotHdrRemarks' => strip_tags($remarks,ENT_QUOTES),
+			'TxnQuotHdrSubTotal'=> strip_tags($subtotal,ENT_QUOTES),
+			'TxnQuotHdrTotal'	=> strip_tags($total,ENT_QUOTES),
+			'MstCustID' 		=> strip_tags($customer_id,ENT_QUOTES),
+			'MstSalesPICID' 	=> strip_tags($sales_id,ENT_QUOTES),
+			'MstGRPSalesID' 	=> strip_tags($groupsales_id,ENT_QUOTES),
+			'MstTypeOrderID'	=> strip_tags($typeorder_id,ENT_QUOTES)
+		);
+
+		$query = $this->db->insert('txnquothdr',$data);
+
+		$last_id = $this->db->insert_id($query);
+
+		if($last_id != null)
+		{
+			return $last_id;
+		}
+		else
+		{
+			return null;
+		}	
+	}
+
+	public function save_detail()
+	{
+		$post 			= $this->input->post('data');
+		$quotation_id 	= $this->input->post('quotationid');
+
+		$data = array();
+
+		foreach($post as $key => $value){
+			
+			if($value[4] == 'amount') {
+				$percent = 0;
+				$amount  = $value[5];
+			}elseif($value[4] == 'percent') {
+				$percent = $value[5];
+				$amount = 0;
+			}else {
+				$percent = 0;
+				$amount  = 0;
+			}
+
+			$data[] = array(
+				'TxnQuotDtlID'  		=> null,
+				'TxnQuotDtlQty' 		=> $value[3],
+				'TxnQuotDtlUnitPrice'	=> $value[2],
+				'TxnQuotDtlDiscPrs'     => $percent,		
+				'TxnQuotDtlDiscAm'      => $amount,
+				'TxnQuotDtlTotAm'		=> $value[6],
+				'TxnQuotDtlRemarks'		=> $value[7],
+				'MstChasID'				=> $value[0],
+				'MstProductID'			=> $value[1],
+				'TxnQuotHdrID'			=> $quotation_id,
+				'TxnDrawID'				=> $value[8]
+			);
+		}
+
+		$this->db->insert_batch('txnquotdtl', $data);
+
+		$id = $this->db->insert_id();
+
+		return $id;
+	}
+
+
 }
 
 /* End of file m_quotation.php */

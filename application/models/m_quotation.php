@@ -99,10 +99,12 @@ class M_quotation extends CI_Model {
 
 		if($query->num_rows > 0)
 		{
-			return $query->row();
+			$id = $query->row()->TxnQuotHdrID;
+			$id++;
+			return $id;
 		}else
 		{
-			return null;
+			return $id=1;
 		}
 	}
 
@@ -237,6 +239,28 @@ class M_quotation extends CI_Model {
 		$id = $this->db->insert_id();
 
 		return $id;
+	}
+
+	public function get_quotation($id)
+	{
+		$query1 = $this->db->get_where('txnquothdr',array('TxnQuotHdrID'=>$id));
+
+		$data = array();
+		if($query1->num_rows == 1)
+		{
+			$data['quotationhdr'] = $query1->row();
+			$query2 = $this->db->get_where('txnquotdtl',array('TxnQuotHdrID'=>$id));
+
+			if($query2->num_rows() > 0)
+			{
+				$data['quotationdtl'] = $query2->result();
+			}
+
+			return $data;
+		}else {
+
+			return null;
+		}
 	}
 
 

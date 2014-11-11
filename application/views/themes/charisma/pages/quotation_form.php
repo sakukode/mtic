@@ -6,6 +6,9 @@
         <li>
             <a href="#">Quotation</a>
         </li>
+        <li>
+            Create
+        </li>
     </ul>
 </div>
 
@@ -235,7 +238,7 @@
                     <div class="col-sm-6"></div>
                     <label class="col-sm-2 control-label label-custom">Discount</label>
                         <div class="col-sm-4">
-                            <input type="text" class="form-control input-number" name="discount-hdr" id="discount-hdr" onkeyup="totalHdr(this.value)">
+                            <input type="text" class="form-control input-number" name="discount-hdr" id="discount-hdr" onkeyup="totalHdr(this.value)" value="0">
                     </div>
                 </div>
                  <div class="form-group">
@@ -255,6 +258,7 @@
                 <hr>
                 <div class="box-footer">
                     <button class="btn btn-success" type="submit">Save Quotation</button>
+                    <a href="<?php echo site_url('quotation');?>" class="btn btn-default">Back to list</a>
                 </div>
                 </form>
             </div>

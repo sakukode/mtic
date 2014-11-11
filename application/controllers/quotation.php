@@ -12,28 +12,50 @@ class Quotation extends CI_Controller {
 		$this->stencil->slice('script');
 
 		$this->stencil->layout('default');
+		$this->stencil->title('Quotation');
+
+		$this->load->helper(array('currency'));
 
 		$this->load->model('m_quotation');
 	}
 
 	public function index()
 	{
-		$row = $this->m_quotation->get_maxid();
+		$data['path_table'] = 'quotation/get_all';
+		$this->stencil->data($data);
+		$this->stencil->paint('quotation_list');
+	}
 
-		if($row != null)
-		{
-			$data['no'] = $row->TxnQuotHdrID;
-		}else
-		{
-			$data['no'] = 1;
-		}
+	public function get_all()
+	{
+		$this->load->library('datatables');
+		$this->datatables->select('TxnQuotHdrID,TxnQuotHdrNo,MstCustIDName,TxnQuotHdrDate,TxnQuotHdrTotal')
+						 ->from('txnquothdr')
+						 ->join('mstcust','mstcust.MstCustID=txnquothdr.MstCustID')
+						 ->unset_column('TxnQuotHdrID')
+						 ->edit_column('TxnQuotHdrTotal','Rp. $1','rupiah(TxnQuotHdrTotal)')
+						 ->add_column('Action',
+				        	'<a href="'.site_url('quotation/view/$1').'" class="btn btn-xs btn-info">
+				        	Detail</a>
+				        	<a href="'.site_url('quotation/edit/$1').'" class="btn btn-xs btn-success">
+				        	Edit</a>  
+				        	<button class="btn btn-xs btn-danger btn-del" id=$1">
+				        	Delete','TxnQuotHdrID');
 
+		echo $this->datatables->generate();
+
+
+	}
+
+	public function create()
+	{
+		$data['no'] = $this->m_quotation->get_maxid();
 		$data['terms'] = "1. Payment  : 14 Days after confirmation PO
 2. Delivery : Total lead time for 2 months after confirmation / Purchase Order
 3. Validity : One month after this quotation,the price can be change anytime without prior notice";
 
 		$this->stencil->data($data);
-		$this->stencil->title('Quotation');
+		
 
 		$this->stencil->paint('quotation_form');	
 	}
@@ -215,6 +237,21 @@ class Quotation extends CI_Controller {
 		}else {
 			$this->session->set_flashdata('msgerror', 'Failed saved');
 		}
+	}
+
+	public function view($id)
+	{
+		$result = $this->m_quotation->get_quotation($id);
+
+		if($result != null)
+		{
+			$data['quotationhdr'] = $result['quotationhdr'];
+			$data['quotationdtl'] = $result['quotationdtl'];
+		}
+
+		$this->stencil->data($data);
+
+		$this->stencil->paint('quotation_detail');
 	}
 
 

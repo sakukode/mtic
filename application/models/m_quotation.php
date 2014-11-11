@@ -95,7 +95,7 @@ class M_quotation extends CI_Model {
 
 	public function get_maxid()
 	{
-		$query = $this->db->select('TxnQuotHdrID')->get('txnquothdr');
+		$query = $this->db->select_max('TxnQuotHdrID')->get('txnquothdr');
 
 		if($query->num_rows > 0)
 		{
@@ -158,7 +158,7 @@ class M_quotation extends CI_Model {
 		$typeorder_id 	= $this->input->post('type-order',TRUE);
 		$date       	= $this->input->post('date-quotation',TRUE);
 		$customer_id	= $this->input->post('customer',TRUE);
-		$remarks		= $this->input->post('remarks',TRUE);
+		$remarks		= $this->input->post('re',TRUE);
 		$sales_id		= $this->input->post('sales',TRUE);
 		$terms			= $this->input->post('terms',TRUE);
 		$no_array	 	= $this->input->post('no-quotation',TRUE);
@@ -243,13 +243,21 @@ class M_quotation extends CI_Model {
 
 	public function get_quotation($id)
 	{
-		$query1 = $this->db->get_where('txnquothdr',array('TxnQuotHdrID'=>$id));
+		$query1 = $this->db->select('a.*,b.MstCustIDName cust_name,b.MstCustIDPIC1 attention,b.MstCustIDAddress1 addr1,b.MstCustIDAddress2 addr2,b.MstCustIDAddress3 addr3,b.MstCustIDNoTlp notelp,b.MstCustIDNofax fax,b.MstCustIDPIC2 cc,b.MstCustIDPICEmail1 email')
+						   ->from('txnquothdr as a')
+						   ->join('mstcust as b','b.MstCustID=a.MstCustID')
+						   ->where('a.TxnQuotHdrID',$id)
+						   ->get();
 
 		$data = array();
 		if($query1->num_rows == 1)
 		{
 			$data['quotationhdr'] = $query1->row();
-			$query2 = $this->db->get_where('txnquotdtl',array('TxnQuotHdrID'=>$id));
+			$query2 = $this->db->select('b.MstProductType item_type,b.MstProductVariant item_variant,b.MstProductGroupingSize item_size,a.TxnQuotDtlQty qty,a.TxnQuotDtlUnitPrice price,a.TxnQuotDtlTotAm amount,a.TxnQuotDtlRemarks remarks')
+							   ->from('txnquotdtl as a')
+							   ->join('mstproduct as b','b.MstProductID=a.MstProductID')
+							   ->where('a.TxnQuotHdrID',$id)
+							   ->get();
 
 			if($query2->num_rows() > 0)
 			{

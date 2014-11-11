@@ -87,7 +87,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label label-custom">Remarks</label>
                         <div class="col-sm-3">
-                            <input type="text" class="form-control" name="remarks">
+                            <input type="text" class="form-control" name="re">
                         </div>
                         <label class="col-sm-2 control-label label-custom">Attention</label>
                         <label class="col-sm-5 control-label label-custom text-info" id="attention"></label>

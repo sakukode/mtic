@@ -26,17 +26,28 @@
             </div>
             <div class="box-content">
                 <!-- put your content here -->
-                <p>
+                
                     <a href="<?php echo site_url('quotation/create');?>" class="btn btn-primary">Create New</a>
-                </p>
+                    <div class="btn-group">
+                    <button class="btn btn-default">With Selected</button>
+                    <button class="btn dropdown-toggle btn-default" data-toggle="dropdown"><span class="caret"></span></button>
+                    <ul class="dropdown-menu">                        
+                        <li><a href="#"><i class="glyphicon glyphicon-trash"></i> Delete</a></li>
+                    </ul>
+                </div>
+
+                <p></p>
+                
 
                <table class="table table-striped table-bordered" id="quotation-table">
                 <thead>
                 <tr>
+                    <th><input type="checkbox" name="check-all" id="check-all"></th>
                     <th>No Quotation</th>
                     <th>Customer</th>
                     <th>Date</th>
                     <th>Amount</th>
+                    <th>Status</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -83,9 +94,9 @@
             "aoColumnDefs": [
                 {
                     'bSortable' : false,
-                    'aTargets' : [ 4 ]
+                    'aTargets' : [ 6 ]
                 },
-                { "sWidth": "160px", "aTargets": [ 4 ] }
+                { "sWidth": "160px", "aTargets": [ 6 ] }
             ]
         });
     });

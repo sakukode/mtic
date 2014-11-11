@@ -14,7 +14,7 @@ class Quotation extends CI_Controller {
 		$this->stencil->layout('default');
 		$this->stencil->title('Quotation');
 
-		$this->load->helper(array('currency'));
+		$this->load->helper(array('currency','quotation'));
 
 		$this->load->model('m_quotation');
 	}
@@ -29,11 +29,12 @@ class Quotation extends CI_Controller {
 	public function get_all()
 	{
 		$this->load->library('datatables');
-		$this->datatables->select('TxnQuotHdrID,TxnQuotHdrNo,MstCustIDName,TxnQuotHdrDate,TxnQuotHdrTotal')
+		$this->datatables->select('TxnQuotHdrID,TxnQuotHdrNo,MstCustIDName,TxnQuotHdrDate,TxnQuotHdrTotal,MstApprID')
 						 ->from('txnquothdr')
 						 ->join('mstcust','mstcust.MstCustID=txnquothdr.MstCustID')
-						 ->unset_column('TxnQuotHdrID')
+						 ->edit_column('TxnQuotHdrID','<input type="checkbox" name="id[]" value="$1">','TxnQuotHdrID')
 						 ->edit_column('TxnQuotHdrTotal','Rp. $1','rupiah(TxnQuotHdrTotal)')
+						 ->edit_column('MstApprID','$1','check_approve(MstApprID)')
 						 ->add_column('Action',
 				        	'<a href="'.site_url('quotation/view/$1').'" class="btn btn-xs btn-info">
 				        	Detail</a>

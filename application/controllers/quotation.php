@@ -31,8 +31,8 @@ class Quotation extends CI_Controller {
 		$this->load->library('datatables');
 		$this->datatables->select('TxnQuotHdrID,TxnQuotHdrNo,MstCustIDName,TxnQuotHdrDate,TxnQuotHdrTotal,MstApprID')
 						 ->from('txnquothdr')
-						 ->join('mstcust','mstcust.MstCustID=txnquothdr.MstCustID')
-						 ->edit_column('TxnQuotHdrID','<input type="checkbox" name="id[]" value="$1">','TxnQuotHdrID')
+						 ->join('mstcust','mstcust.MstCustID=txnquothdr.MstCustID','LEFT')
+						 ->edit_column('TxnQuotHdrID','<input type="checkbox" class="checkbox-quo" name="id[]" value="$1">','TxnQuotHdrID')
 						 ->edit_column('TxnQuotHdrTotal','Rp. $1','rupiah(TxnQuotHdrTotal)')
 						 ->edit_column('MstApprID','$1','check_approve(MstApprID)')
 						 ->add_column('Action',
@@ -240,6 +240,28 @@ class Quotation extends CI_Controller {
 		}
 	}
 
+	public function update_master()
+	{
+		$id = $this->input->post('quotation-id');
+		$this->m_quotation->update_master($id);
+	
+		$data = array(
+			'lastid' => $id
+		);
+
+		echo json_encode($data);
+	}
+
+	public function update_detail()
+	{
+		//$data = $this->input->post('data',TRUE);
+		//echo print_r($data); exit();
+		$result = $this->m_quotation->update_detail();
+
+		$this->session->set_flashdata('msgsuccess', 'Succesfully updated Quotation');
+
+	}
+
 	public function view($id)
 	{
 		$result = $this->m_quotation->get_quotation($id);
@@ -253,6 +275,91 @@ class Quotation extends CI_Controller {
 		$this->stencil->data($data);
 
 		$this->stencil->paint('quotation_detail');
+	}
+
+	public function edit($id)
+	{
+		$result = $this->m_quotation->edit_quotation($id);
+
+		if($result != null)
+		{
+			$data['quotationhdr'] = $result['quotationhdr'];
+			$data['quotationdtl'] = $result['quotationdtl'];
+		}
+
+		$this->stencil->data($data);
+		$this->stencil->paint('quotation_formedit');
+	}
+
+	public function delete()
+	{
+		$id =$_GET['id'];
+
+		if($id != '')
+		{
+			$result = $this->m_quotation->delete($id);
+
+			if($result == TRUE)
+			{
+				$this->session->set_flashdata('msgsuccess', 'Succesfully deleted');
+			}
+			else
+			{
+				$this->session->set_flashdata('msgerror', 'Failed deleted');
+			}
+			
+			$data = array(
+				'status' => TRUE
+			);
+
+			echo json_encode($data);
+	
+		}
+		else
+		{
+			$data  = array(
+				'status' => FALSE
+			);
+
+			echo json_encode($data);
+		}
+		
+	}
+
+	public function delete_many()
+	{
+		$data = $this->input->post('data',TRUE);
+
+		if($data != '')
+		{
+			$result = $this->m_quotation->delete_many($data);
+
+			if($result == TRUE)
+			{
+				$this->session->set_flashdata('msgsuccess', 'Succesfully deleted');
+			}
+			else
+			{
+				$this->session->set_flashdata('msgerror', 'Failed deleted');
+			}
+			
+			$data = array(
+				'status' => TRUE
+			);
+
+			echo json_encode($data);
+	
+		}
+		else
+		{
+			$data  = array(
+				'status' => FALSE,
+				'msg' => 'No ID Selected. Failed delete'
+			);
+
+			echo json_encode($data);
+		}
+		
 	}
 
 

@@ -82,8 +82,22 @@
                      <tr>
                         <td><strong>Email</strong></td>
                         <td>:</td>
-                        <td><?php echo $quotationhdr->email;?></td>
+                        <td><?php echo $quotationhdr->email1;?></td>
                     </tr>
+                    <?php if($quotationhdr->email2 != ''): ?>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td><?php echo $quotationhdr->email2;?></td>
+                    </tr>
+                    <?php endif; ?>
+                    <?php if($quotationhdr->email3 != ''): ?>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td><?php echo $quotationhdr->email3;?></td>
+                    </tr>
+                    <?php endif; ?>
                 </table>
                 <hr>
                 <table class="table table-bordered">

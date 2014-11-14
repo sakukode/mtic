@@ -7,7 +7,7 @@
             <a href="#">Quotation</a>
         </li>
         <li>
-            Create
+            Edit
         </li>
     </ul>
 </div>
@@ -38,59 +38,77 @@
                 <?php endif; ?>
 
                 <h3>Master Quotation</h3>
+                
                 <hr>
-                <form class="form-horizontal" method="POST" action="<?php echo site_url('quotation/save_master');?>" id="form-quotation">
+                <form class="form-horizontal" method="POST" action="<?php echo site_url('quotation/update_master');?>" id="form-quotation">
+                    <input type="hidden" name="quotation-id" value="<?php echo $quotationhdr->TxnQuotHdrID;?>">
                     <div class="form-group">
                         <label class="col-sm-2 control-label label-custom">Group Sales</label>
                         <div class="col-sm-3">
                                 <select class="form-control" id="group-sales" name="group-sales" data-placeholder="Choose a Group Sales">
                                     <option value=""></option>
+                                    <option value="<?php echo $quotationhdr->MstGRPSalesID;?>" selected><?php echo $quotationhdr->groupsales;?></option>
                                 </select>
                         </div>
                         <label class="col-sm-2 control-label label-custom">Type Order</label>
                         <div class="col-sm-3">
                                 <select class="form-control" id="type-order" name="type-order" data-placeholder="Choose a Type Order">
                                     <option vale=""></option>
+                                    <option value="<?php echo $quotationhdr->MstTypeOrderID;?>" selected><?php echo $quotationhdr->typeorder;?></option>
                                 </select>
                         </div>
                     </div>
                     <div class="form-group">
+                        <?php 
+                        $no_array = $quotationhdr->TxnQuotHdrNo;
+                        $no = explode("/", $no_array);
+                        ?>
                         <label class="col-sm-2 control-label label-custom">No Quotation</label>
                         <div class="col-sm-1">
-                            <input type="text" class="form-control" value="<?php echo $no;?>" readonly name="no-quotation[]">
+                            <input type="text" class="form-control" value="<?php echo $no[0];?>" readonly name="no-quotation[]">
                         </div>
                          <div class="col-sm-2">
                             <input type="text" class="form-control" readonly value="MTI-MRK" name="no-quotation[]">
                         </div>
                          <div class="col-sm-2">
-                            <input type="text" class="form-control" readonly id="no-quotation-3" name="no-quotation[]">
+                            <input type="text" class="form-control" value="<?php echo $no[2];?>" readonly id="no-quotation-3" name="no-quotation[]">
                         </div>
                         <div class="col-sm-1">
-                            <input type="text" class="form-control" readonly id="no-quotation-4" name="no-quotation[]">
+                            <input type="text" class="form-control" value="<?php echo $no[3];?>" readonly id="no-quotation-4" name="no-quotation[]">
                         </div>
                         <div class="col-sm-2">
-                            <input type="text" class="form-control" readonly id="no-quotation-5" name="no-quotation[]">
+                            <input type="text" class="form-control" value="<?php echo $no[4];?>" readonly id="no-quotation-5" name="no-quotation[]">
+                        </div>
+                        <div class="col-sm-2">
+                            <select class="form-control" name="no-quotation[]">
+                                <option value="REV1">REV1</option>
+                                <option value="REV2">REV2</option>
+                                <option value="REV3">REV3</option>
+                                <option value="REV4">REV4</option>
+                                <option value="REV5">REV5</option>
+                            </select>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label label-custom">Date Quotation</label>
                         <div class="col-sm-3">
-                            <input id="date-quotation" type="text" class="form-control datepicker" name="date-quotation">
+                            <input id="date-quotation" type="text" class="form-control datepicker" name="date-quotation" value="<?php echo $quotationhdr->TxnQuotHdrDate;?>">
                         </div> 
                         <label class="col-sm-2 control-label label-custom">To</label>
                         <div class="col-sm-4">
                                 <select class="form-control" id="customer" data-placeholder="Choose a Customer" name="customer">
                                    <option value=""></option>
+                                   <option value="<?php echo $quotationhdr->MstCustID;?>" selected><?php echo $quotationhdr->cust_name;?></option>
                                 </select>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label label-custom">Remarks</label>
                         <div class="col-sm-3">
-                            <input type="text" class="form-control" name="re">
+                            <input type="text" class="form-control" name="re" value="<?php echo $quotationhdr->TxnQuotHdrRemarks?>">
                         </div>
                         <label class="col-sm-2 control-label label-custom">Attention</label>
-                        <label class="col-sm-5 control-label label-custom text-info" id="attention"></label>
+                        <label class="col-sm-5 control-label label-custom text-info" id="attention"><?php echo $quotationhdr->attention;?></label>
                     </div>
                     
                    
@@ -98,32 +116,45 @@
                         <label class="col-sm-2 control-label label-custom">Sales</label>
                         <div class="col-sm-3">
                             <select class="form-control" id="sales" data-placeholder="Choose a Sales" name="sales">
-                                <option value=""></option>     
+                                <option value=""></option> 
+                                <option value="<?php echo $quotationhdr->MstSalesPICID;?>" selected><?php echo $quotationhdr->sales;?></option>    
                             </select>
                         </div>
                         <label class="col-sm-2 control-label label-custom">Address</label>
-                        <label class="col-sm-5 control-label label-custom text-info" id="address"></label>
+                        <label class="col-sm-5 control-label label-custom text-info" id="address">
+                            <?php 
+                            echo $quotationhdr->addr1;
+                            if($quotationhdr->addr2 != '') echo '<br>'.$quotationhdr->addr2;
+                            if($quotationhdr->addr3 != '') echo '<br>'.$quotationhdr->addr3;
+                            ?>
+                        </label>
                     </div>
                     <div class="form-group">
                         <div class="col-sm-5"></div>
                         <label class="col-sm-2 control-label label-custom">Phone/Fax</label>
-                        <label class="col-sm-5 control-label label-custom text-info" id="phone-fax"></label>
+                        <label class="col-sm-5 control-label label-custom text-info" id="phone-fax"><?php echo $quotationhdr->notelp.' / '.$quotationhdr->fax;?></label>
                         
                     </div>
                     <div class="form-group">
                         <div class="col-sm-5"></div>
                         <label class="col-sm-2 control-label label-custom">CC</label>
-                        <label class="col-sm-5 control-label label-custom text-info" id="cc"></label>
+                        <label class="col-sm-5 control-label label-custom text-info" id="cc"><?php echo $quotationhdr->cc;?></label>
                     </div>
                     <div class="form-group">
                         <div class="col-sm-5"></div>
                         <label class="col-sm-2 control-label label-custom">Email</label>
-                        <label class="col-sm-5 control-label label-custom text-info" id="email"></label>
+                        <label class="col-sm-5 control-label label-custom text-info" id="email">
+                            <?php 
+                            echo $quotationhdr->email1;
+                            if($quotationhdr->email2 != '') echo '<br>'.$quotationhdr->email2;
+                            if($quotationhdr->email3 != '') echo '<br>'.$quotationhdr->email3;
+                            ?>
+                        </label>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label label-custom">Terms & Condition</label>
                         <div class="col-sm-8">
-                            <textarea class="form-control" rows="5" readonly name="terms"><?php echo $terms; ?></textarea>
+                            <textarea class="form-control" rows="5" readonly name="terms"><?php echo $quotationhdr->TxnQuotHdrTermsTxt;?></textarea>
                         </div>
                     </div>
 
@@ -145,6 +176,7 @@
                         <tr>
                             <td>
                                 <input type="hidden" name="rowNo" value="" id="rowNo"> 
+                                <input type="hidden" name="detailid" value="" id="detailid"> 
                                 <select class="form-control combo-detail-2" data-rel="chosen" data-placeholder="Choose a Option" id="type-product" name="type-product">
                                     <option value=""></option>
                                     <option value="PRODUCT">PRODUCT</option>
@@ -184,7 +216,7 @@
                                 <select class="form-control combo-detail-2" data-placeholder="Choose a Option" name="disc-option" id="disc-option" data-rel="chosen">
                                     <option value=""></option>
                                     <option value="amount">Amount</option>
-                                    <option value="percent">Percent %</option>
+                                    <option value="percent">Percent</option>
                                 </select>
                             </td>
                             <td>
@@ -207,10 +239,10 @@
                     </tbody>
                 </table>
     
-                <button class="btn btn-primary" type="button" onclick="addList()"><i class="glyphicon glyphicon-plus"></i> add</button>
+                <button id="add-row" class="btn btn-primary" type="button" onclick="addList()"><i class="glyphicon glyphicon-plus"></i> add</button>
                 <button id="delete-row" class="btn btn-warning" type="button"><i class="glyphicon glyphicon-minus"></i> delete</button>
-                 <button id="update-row" class="btn btn-success" type="button" value="edit"><i class="glyphicon glyphicon-pencil"></i> Edit</button>
-                <button id="clear-row" class="btn btn-default" type="button" onclick="clearFormDetail()"><i class="glyphicon glyphicon-remove"></i> Clear</button>
+                <button id="update-row" class="btn btn-success" type="button" value="edit"><i class="glyphicon glyphicon-pencil"></i> Edit</button>
+                <button id="clear-row" class="btn btn-default" type="button"><i class="glyphicon glyphicon-remove"></i> Clear</button>
                 <hr>
                 <table class="table table-bordered" id="table-detail">
                     <thead>
@@ -228,40 +260,68 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <?php
+                        foreach($quotationdtl as $row):
+                        ?>
+                        <tr>
+                            <td><input type="hidden" value="<?php echo $row->TxnQuotDtlID;?>" name="rowid[]"><?php echo $row->MstProductTypeProduct;?></td>
+                            <td><input type="hidden" value="<?php echo $row->MstChasID;?>" name="chasisid[]"><?php echo $row->MStChasMaker.' '.$row->MStChasModel.' '.$row->MStChasType;?></td>
+                            <td><input type="hidden" value="<?php echo $row->MstProductID;?>" name="productid[]"><?php echo $row->MstProductType.' '.$row->MstProductVariant.' '.$row->MstProductGroupingSize;?></td>
+                            <td><?php echo $row->TxnQuotDtlUnitPrice;?></td>
+                            <td><?php echo $row->TxnQuotDtlQty;?></td>
+                            <?php 
+                            if($row->TxnQuotDtlDiscAm != 0 && $row->TxnQuotDtlDiscPrs == 0 ):
+                            ?>
+                            <td><?php echo 'Amount'; ?></td>
+                            <td><?php echo $row->TxnQuotDtlDiscAm;?></td>
+                            <?php elseif($row->TxnQuotDtlDiscAm == 0 && $row->TxnQuotDtlDiscPrs != 0 ): ?>
+                            <td><?php echo 'Percent';?></td>
+                            <td><?php echo $row->TxnQuotDtlDiscPrs;?></td>    
+                            <?php else: ?>
+                            <td><?php echo '';?></td>
+                            <td><?php echo '';?></td>
+                            <?php endif; ?>
+                            <td><?php echo $row->TxnQuotDtlTotAm;?></td>
+                            <td><?php echo $row->TxnQuotDtlRemarks;?></td>
+                            <td><input type="hidden" value="<?php echo $row->TxnDrawID;?>" name="drawid[]"><?php echo $row->TxnDrawNo;?></td>
+                        </tr>
+                        <?php
+                        endforeach;
+                        ?>
                     </tbody>
                 </table>
                 <div class="form-group">
                     <div class="col-sm-6"></div>
                     <label class="col-sm-2 control-label label-custom">SubTotal</label>
                         <div class="col-sm-4">
-                            <input type="text" class="form-control" name="sub-total" id="sub-total" readonly value="0">
+                            <input type="text" class="form-control" name="sub-total" id="sub-total" readonly value="<?php echo $quotationhdr->TxnQuotHdrSubTotal;?>">
                     </div>
                 </div>
                  <div class="form-group">
                     <div class="col-sm-6"></div>
                     <label class="col-sm-2 control-label label-custom">Discount</label>
                         <div class="col-sm-4">
-                            <input type="text" class="form-control" name="discount-hdr" id="discount-hdr" onkeyup="totalHdr(this.value)" value="0">
+                            <input type="text" class="form-control" name="discount-hdr" id="discount-hdr" onkeyup="totalHdr(this.value)" value="<?php echo $quotationhdr->TxnQuotHdrDiscount;?>">
                     </div>
                 </div>
                  <div class="form-group">
                     <div class="col-sm-6"></div>
                     <label class="col-sm-2 control-label label-custom">PPN (10%)</label>
                         <div class="col-sm-4">
-                            <input type="text" class="form-control" name="ppn" readonly id="ppn">
+                            <input type="text" class="form-control" name="ppn" readonly id="ppn" value="<?php echo $quotationhdr->TxnQuotHdrPpn;?>">
                     </div>
                 </div>
                  <div class="form-group">
                     <div class="col-sm-6"></div>
                     <label class="col-sm-2 control-label label-custom">Total</label>
                         <div class="col-sm-4">
-                            <input type="text" class="form-control" name="total" value="0" readonly id="total">
+                            <input type="text" class="form-control" name="total" readonly id="total" value="<?php echo $quotationhdr->TxnQuotHdrTotal;?>">
                     </div>
                 </div>
                 <hr>
                 <div class="box-footer">
                     <a href="<?php echo site_url('quotation');?>" class="btn btn-default">Back to list</a>
-                    <button class="btn btn-success" type="submit">Save Quotation</button>
+                    <button class="btn btn-success" type="submit">Update Quotation</button>
                 </div>
                 </form>
             </div>
@@ -532,7 +592,7 @@ $(function() {
         }
     });
 
-    /* submit form quotation header */
+    /* submit form quotation header and quotation detail*/
 
     $("#form-quotation").submit(function(event) {
         /* Act on the event */
@@ -541,6 +601,11 @@ $(function() {
         var productidArray = [];
             chasisidArray  = [];
             drawidArray    = [];
+            rowidArray     = [];
+
+        $('input[name^="rowid"]').each(function() {
+            rowidArray.push($(this).val());
+        });
 
         $('input[name^="productid"]').each(function() {
           productidArray.push($(this).val());
@@ -556,17 +621,33 @@ $(function() {
 
         var firstsCellArray=[];
         var secondCellArray=[];
+        var discAmount;
+        var discPercent;
 
         $.each( oTable.fnGetData(), function(i, row){
-          secondCellArray.push(chasisidArray[i]);  //index 0
-          secondCellArray.push(productidArray[i]); //index 1
-          secondCellArray.push(row[3]); //index 2
-          secondCellArray.push(row[4]); //index 3
-          secondCellArray.push(row[5]); //index 4
-          secondCellArray.push(row[6]); //index 5
-          secondCellArray.push(row[7]); //index 6
-          secondCellArray.push(row[8]); //index 7
-          secondCellArray.push(drawidArray[i]); //index 8
+          secondCellArray.push(rowidArray[i]); // index 0
+          secondCellArray.push(chasisidArray[i]);  //index 1
+          secondCellArray.push(productidArray[i]); //index 2
+          secondCellArray.push(row[3]); //index 3
+          secondCellArray.push(row[4]); //index 4
+
+          if(row[5] == 'Amount') {
+             discAmount  = row[6];
+          }else {
+            discAmount = 0;
+          }
+
+          if(row[5] == 'Percent') {
+             discPercent = row[6];
+          }else {
+             discPercent = 0;
+          }
+
+          secondCellArray.push(discAmount); // index 5
+          secondCellArray.push(discPercent); // index 6
+          secondCellArray.push(row[7]); //index 7
+          secondCellArray.push(row[8]); //index 8
+          secondCellArray.push(drawidArray[i]); //index 9
 
           firstsCellArray.push(secondCellArray);
 
@@ -579,7 +660,7 @@ $(function() {
             var lastid = data.lastid;
             if(lastid != ''){
                 
-                $.post("<?php echo site_url('quotation/save_detail');?>",{data:firstsCellArray,quotationid:lastid},function(){
+                $.post("<?php echo site_url('quotation/update_detail');?>",{data:firstsCellArray,quotationid:lastid},function(){
                     location.reload();
                 }); 
             
@@ -587,11 +668,23 @@ $(function() {
         },"json");
     });
 
-    
+    /*
+        Clear select row & form
+    */
+   
+    $("#clear-row").click(function() {
+        /* Act on the event */
+        clearFormDetail();
+    });
+   
+
+
     /* proses edit & update detail item */
     $("#update-row").click(function() {
         /* Act on the event */
-        var action = $(this).val();   
+        var action = $(this).val();
+
+        
 
         if(action === 'edit'){
 
@@ -615,8 +708,8 @@ $(function() {
                 var row = oTable.fnGetData(anSelected[0]);
                 var idRow = oTable.fnGetPosition(anSelected[0]); 
 
-            
-                var typeProduct = $(rowInput).find('td:eq(0)').text();
+                var rowid       = $(rowInput).find('input[name^="rowid"]').val();
+                    typeProduct = $(rowInput).find('td:eq(0)').text();
                     chasisID    = $(rowInput).find('input[name^="chasisid"]').val();
                     chasisName  = $(rowInput).find('td:eq(1)').text();
                     itemID      = $(rowInput).find('input[name^="productid"]').val();
@@ -625,6 +718,7 @@ $(function() {
                     drawName    = $(rowInput).find('td:eq(9)').text();
 
                 
+                $("#detailid").val(rowid);
                 $("#rowNo").val(idRow);
                 $("#type-product option:selected").val(typeProduct).text(typeProduct).trigger('chosen:updated');
                 $("#type-chasis option:selected").val(chasisID).text(chasisName).trigger('chosen:updated');
@@ -682,16 +776,18 @@ function subtotal(qty){
 
 
 function addList() {
+    
     var productID = $("#item").val();
         chasisID  = $("#type-chasis").val();
         drawID    = $("#drawing").val();
 
+        inputID      = '<input type="hidden" value="" name="rowid[]">';
         inputProduct = '<input type="hidden" value="'+productID+'" name="productid[]">';
         inputChasis  = '<input type="hidden" value="'+chasisID+'" name="chasisid[]">';
         inputDraw    = '<input type="hidden" value="'+drawID+'" name="drawid[]">';
 
     $('#table-detail').dataTable().fnAddData( [
-        $('#type-product option:selected').text(),
+        inputID+$('#type-product option:selected').text(),
         inputChasis+$('#type-chasis option:selected').text(),
         inputProduct+$('#item option:selected').text(),
         $('#item-price').val(),
@@ -716,19 +812,20 @@ function updateRow(rowIndex) {
     var productID = $("#item").val();
         chasisID  = $("#type-chasis").val();
         drawID    = $("#drawing").val();
+        rowID     = $("#detailid").val();
 
-
+        inputID      = '<input type="hidden" value="'+rowID+'" name="rowid[]">';
         inputProduct = '<input type="hidden" value="'+productID+'" name="productid[]">';
         inputChasis  = '<input type="hidden" value="'+chasisID+'" name="chasisid[]">';
         inputDraw    = '<input type="hidden" value="'+drawID+'" name="drawid[]">';
 
         $("#table-detail").dataTable().fnUpdate( [
-        $('#type-product option:selected').text(),
+        inputID+$('#type-product option:selected').text(),
         inputChasis+$('#type-chasis option:selected').text(),
         inputProduct+$('#item option:selected').text(),
         $('#item-price').val(),
         $('#qty').val(),
-        $('#disc-option').val(),
+        $('#disc-option option:selected').text(),
         $('#discount').val(),
         $('#amount').val(),
         $('#remarks').val(),
@@ -810,7 +907,6 @@ function clearFormDetail()
     $(".combo-detail-2").val('').trigger('chosen:updated');
     $(".combo-detail option:selected").text('').trigger('chosen:updated');
     $(".combo-detail").val('').trigger("chosen:updated");
-    $("#disc-option").val('').trigger("chosen:updated");
     $(".input-detail").val('');
     $(".input-number").val(0);
     $("#amount").val(0);

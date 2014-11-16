@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Nov 10, 2014 at 10:02 
+-- Generation Time: Nov 16, 2014 at 08:43 
 -- Server version: 5.6.16
 -- PHP Version: 5.5.11
 
@@ -19,6 +19,88 @@ SET time_zone = "+00:00";
 --
 -- Database: `dbmticnew`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ci_sessions`
+--
+
+CREATE TABLE IF NOT EXISTS `ci_sessions` (
+  `session_id` varchar(40) COLLATE utf8_bin NOT NULL DEFAULT '0',
+  `ip_address` varchar(16) COLLATE utf8_bin NOT NULL DEFAULT '0',
+  `user_agent` varchar(150) COLLATE utf8_bin NOT NULL,
+  `last_activity` int(10) unsigned NOT NULL DEFAULT '0',
+  `user_data` text COLLATE utf8_bin NOT NULL,
+  PRIMARY KEY (`session_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- Dumping data for table `ci_sessions`
+--
+
+INSERT INTO `ci_sessions` (`session_id`, `ip_address`, `user_agent`, `last_activity`, `user_data`) VALUES
+('1acfbd99f7bf0c7ac766a22aa3d3941e', '127.0.0.1', 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/36.0.1985.125 Chrome/36.0.1985.125 ', 1416110831, ''),
+('5d9f8ebad077005e6e68f350a9cef1c9', '127.0.0.1', 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/36.0.1985.125 Chrome/36.0.1985.125 ', 1416110940, 'a:6:{s:9:"user_data";s:0:"";s:8:"identity";s:13:"administrator";s:8:"username";s:13:"administrator";s:5:"email";s:15:"admin@admin.com";s:7:"user_id";s:1:"1";s:14:"old_last_login";s:10:"1268889823";}'),
+('ae81c4495f2593db2762f61a683e36f1', '127.0.0.1', 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/36.0.1985.125 Chrome/36.0.1985.125 ', 1416109753, ''),
+('c6b49e5bb252bbb3d87b687ba6b5c300', '127.0.0.1', 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/36.0.1985.125 Chrome/36.0.1985.125 ', 1416110549, ''),
+('eeee0a1de28535b60de2f428b3d20d7e', '127.0.0.1', 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/36.0.1985.125 Chrome/36.0.1985.125 ', 1416111352, 'a:2:{s:9:"user_data";s:0:"";s:17:"flash:old:message";s:51:"<p class="text-success">Logged Out Successfully</p>";}');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `groups`
+--
+
+CREATE TABLE IF NOT EXISTS `groups` (
+  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(20) NOT NULL,
+  `description` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+
+--
+-- Dumping data for table `groups`
+--
+
+INSERT INTO `groups` (`id`, `name`, `description`) VALUES
+(1, 'admin', 'Administrator'),
+(2, 'members', 'General User');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `login_attempts`
+--
+
+CREATE TABLE IF NOT EXISTS `login_attempts` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `ip_address` varchar(15) NOT NULL,
+  `login` varchar(100) NOT NULL,
+  `time` int(11) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `log_quotation`
+--
+
+CREATE TABLE IF NOT EXISTS `log_quotation` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `noquotation` int(3) unsigned zerofill NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+
+--
+-- Dumping data for table `log_quotation`
+--
+
+INSERT INTO `log_quotation` (`id`, `noquotation`) VALUES
+(1, 001),
+(2, 002),
+(3, 003);
 
 -- --------------------------------------------------------
 
@@ -495,16 +577,23 @@ CREATE TABLE IF NOT EXISTS `txnquotdtl` (
   `MstProductID` int(11) NOT NULL,
   `TxnQuotHdrID` int(11) NOT NULL,
   `TxnDrawID` int(11) NOT NULL,
+  `deleted` int(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`TxnQuotDtlID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 ;
 
 --
 -- Dumping data for table `txnquotdtl`
 --
 
-INSERT INTO `txnquotdtl` (`TxnQuotDtlID`, `TxnQuotDtlQty`, `TxnQuotDtlUnitPrice`, `TxnQuotDtlDiscPrs`, `TxnQuotDtlDiscAm`, `TxnQuotDtlTotAm`, `TxnQuotDtlRemarks`, `MstChasID`, `MstProductID`, `TxnQuotHdrID`, `TxnDrawID`) VALUES
-(1, 5, 100000, 10, 0, 490000, 'lorem ipsum', 3, 11, 1, 1),
-(2, 10, 300000, 0, 100000, 2900000, '', 25, 21, 1, 0);
+INSERT INTO `txnquotdtl` (`TxnQuotDtlID`, `TxnQuotDtlQty`, `TxnQuotDtlUnitPrice`, `TxnQuotDtlDiscPrs`, `TxnQuotDtlDiscAm`, `TxnQuotDtlTotAm`, `TxnQuotDtlRemarks`, `MstChasID`, `MstProductID`, `TxnQuotHdrID`, `TxnDrawID`, `deleted`) VALUES
+(1, 5, 3000, 15, 2250, 12750, 'remarks 1', 21, 6, 1, 2, 0),
+(2, 3, 4000, 10, 1200, 10800, 'remarks 2', 1, 17, 1, 1, 0),
+(3, 5, 4000, 15, 3000, 17000, 'lorem ipsum', 17, 14, 2, 1, 0),
+(4, 3, 5500, 10, 1650, 14850, 'lorem ipsum 2', 18, 20, 2, 2, 0),
+(5, 1, 1000, 10, 100, 900, 'remarks 1 rev', 9, 15, 3, 2, 0),
+(6, 1, 2000, 10, 200, 1800, 'remarks 2', 22, 1, 3, 2, 0),
+(7, 1000, 15, 0, 2, 0, '1800', 0, 9, 4, 0, 0),
+(8, 2000, 1, 0, 1, 0, '1800', 6, 22, 4, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -516,7 +605,7 @@ CREATE TABLE IF NOT EXISTS `txnquothdr` (
   `TxnQuotHdrID` int(11) NOT NULL AUTO_INCREMENT,
   `TxnQuotHdrNo` varchar(45) DEFAULT NULL,
   `TxnQuotHdrDate` varchar(45) DEFAULT NULL,
-  `TxnQuotHdrTermsTxt` varchar(45) DEFAULT NULL,
+  `TxnQuotHdrTermsTxt` text,
   `TxnQuotHdrDiscount` int(11) DEFAULT NULL,
   `TxnQuotHdrRemarks` text,
   `TxnQuotHdrPpn` double NOT NULL,
@@ -528,15 +617,19 @@ CREATE TABLE IF NOT EXISTS `txnquothdr` (
   `MstEmpID` int(11) NOT NULL,
   `MstGRPSalesID` int(11) NOT NULL,
   `MstTypeOrderID` int(11) NOT NULL,
+  `deleted` int(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`TxnQuotHdrID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
 
 --
 -- Dumping data for table `txnquothdr`
 --
 
-INSERT INTO `txnquothdr` (`TxnQuotHdrID`, `TxnQuotHdrNo`, `TxnQuotHdrDate`, `TxnQuotHdrTermsTxt`, `TxnQuotHdrDiscount`, `TxnQuotHdrRemarks`, `TxnQuotHdrPpn`, `TxnQuotHdrSubTotal`, `TxnQuotHdrTotal`, `MstCustID`, `MstSalesPICID`, `MstApprID`, `MstEmpID`, `MstGRPSalesID`, `MstTypeOrderID`) VALUES
-(1, '1/MTI-MRK/PLT/XI/2014', '10-11-2014', '1. Payment  : 14 Days after confirmation PO\n2', 50000, '', 339000, 3390000, 3001000, 2, 4, 0, 0, 1, 1);
+INSERT INTO `txnquothdr` (`TxnQuotHdrID`, `TxnQuotHdrNo`, `TxnQuotHdrDate`, `TxnQuotHdrTermsTxt`, `TxnQuotHdrDiscount`, `TxnQuotHdrRemarks`, `TxnQuotHdrPpn`, `TxnQuotHdrSubTotal`, `TxnQuotHdrTotal`, `MstCustID`, `MstSalesPICID`, `MstApprID`, `MstEmpID`, `MstGRPSalesID`, `MstTypeOrderID`, `deleted`) VALUES
+(1, '001/MTI-MRK/PLT/XI/2014', '06-11-2014', '1. Payment  : 14 Days after confirmation PO\n2. Delivery : Total lead time for 2 months after confirmation / Purchase Order\n3. Validity : One month after this quotation,the price can be change anytime without prior notice', 5000, 'remarks 1', 2355, 23550, 20905, 1, 4, 0, 0, 1, 1, 0),
+(2, '002/MTI-MRK/PLT/XI/2014', '13-11-2014', '1. Payment  : 14 Days after confirmation PO\n2. Delivery : Total lead time for 2 months after confirmation / Purchase Order\n3. Validity : One month after this quotation,the price can be change anytime without prior notice', 0, 'lorem ipsum', 3185, 31850, 35035, 3, 5, 0, 0, 1, 2, 0),
+(3, '003/MTI-MRK/PLT/XI/2014', '14-11-2014', '1. Payment  : 14 Days after confirmation PO\n2. Delivery : Total lead time for 2 months after confirmation / Purchase Order\n3. Validity : One month after this quotation,the price can be change anytime without prior notice', 0, 'remarks ', 270, 2700, 2970, 4, 5, 0, 0, 1, 2, 0),
+(4, '003/MTI-MRK/PLT/XI/2014/rev1', '14-11-2014', '1. Payment  : 14 Days after confirmation PO\n2. Delivery : Total lead time for 2 months after confirmation / Purchase Order\n3. Validity : One month after this quotation,the price can be change anytime without prior notice', 500, 'remarks ', 360, 3600, 3460, 4, 5, 0, 0, 1, 2, 0);
 
 -- --------------------------------------------------------
 
@@ -592,6 +685,75 @@ CREATE TABLE IF NOT EXISTS `txnsohdr` (
   `TxnDrawID` int(11) NOT NULL,
   PRIMARY KEY (`TxnSOHdrID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
+--
+
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `ip_address` varchar(15) NOT NULL,
+  `username` varchar(100) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `salt` varchar(255) DEFAULT NULL,
+  `email` varchar(100) NOT NULL,
+  `activation_code` varchar(40) DEFAULT NULL,
+  `forgotten_password_code` varchar(40) DEFAULT NULL,
+  `forgotten_password_time` int(11) unsigned DEFAULT NULL,
+  `remember_code` varchar(40) DEFAULT NULL,
+  `created_on` int(11) unsigned NOT NULL,
+  `last_login` int(11) unsigned DEFAULT NULL,
+  `active` tinyint(1) unsigned DEFAULT NULL,
+  `first_name` varchar(50) DEFAULT NULL,
+  `last_name` varchar(50) DEFAULT NULL,
+  `company` varchar(100) DEFAULT NULL,
+  `phone` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id`, `ip_address`, `username`, `password`, `salt`, `email`, `activation_code`, `forgotten_password_code`, `forgotten_password_time`, `remember_code`, `created_on`, `last_login`, `active`, `first_name`, `last_name`, `company`, `phone`) VALUES
+(1, '127.0.0.1', 'administrator', '$2a$07$SeBknntpZror9uyftVopmu61qg0ms8Qv1yV6FG.kQOSM.9QhmTo36', '', 'admin@admin.com', '', NULL, NULL, NULL, 1268889823, 1416111297, 1, 'Admin', 'istrator', 'ADMIN', '0');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users_groups`
+--
+
+CREATE TABLE IF NOT EXISTS `users_groups` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) unsigned NOT NULL,
+  `group_id` mediumint(8) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uc_users_groups` (`user_id`,`group_id`),
+  KEY `fk_users_groups_users1_idx` (`user_id`),
+  KEY `fk_users_groups_groups1_idx` (`group_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+
+--
+-- Dumping data for table `users_groups`
+--
+
+INSERT INTO `users_groups` (`id`, `user_id`, `group_id`) VALUES
+(1, 1, 1),
+(2, 1, 2);
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `users_groups`
+--
+ALTER TABLE `users_groups`
+  ADD CONSTRAINT `fk_users_groups_groups1` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_users_groups_users1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

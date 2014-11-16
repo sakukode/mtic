@@ -366,7 +366,7 @@ class M_quotation extends CI_Model {
 		$sales_id		= $this->input->post('sales',TRUE);
 		$terms			= $this->input->post('terms',TRUE);
 		$no_array	 	= $this->input->post('no-quotation',TRUE);
-		$no 			= $no_array[0].'/'.$no_array[1].'/'.$no_array[2].'/'.$no_array[3].'/'.$no_array[4].'/'.$no_array[5];
+		$no 			= $no_array[0].'/'.$no_array[1].'/'.$no_array[2].'/'.$no_array[3].'/'.$no_array[4];
 
 		$subtotal		= $this->input->post('sub-total',TRUE);
 		$discount		= $this->input->post('discount-hdr',TRUE);
@@ -403,9 +403,6 @@ class M_quotation extends CI_Model {
 
 		foreach($post as $key => $value){
 			
-			
-		
-
 			if($value[0] == null)
 			{
 				$new = array(
@@ -499,6 +496,41 @@ class M_quotation extends CI_Model {
 		{
 			return null;
 		}	
+	}
+
+	public function create_revisi_detail()
+	{
+		$post 			= $this->input->post('data');
+		$quotation_id 	= $this->input->post('quotationid');
+
+		$new = array();
+		
+
+		foreach($post as $key => $value)
+		{
+			
+				$new[] = array(
+					'TxnQuotDtlID'  		=> null,
+					'TxnQuotDtlQty' 		=> $value[4],
+					'TxnQuotDtlUnitPrice'	=> $value[3],
+					'TxnQuotDtlDiscPrs'     => $value[6],		
+					'TxnQuotDtlDiscAm'      => $value[5],
+					'TxnQuotDtlTotAm'		=> $value[7],
+					'TxnQuotDtlRemarks'		=> $value[8],
+					'MstChasID'				=> $value[1],
+					'MstProductID'			=> $value[2],
+					'TxnQuotHdrID'			=> $quotation_id,
+					'TxnDrawID'				=> $value[9]
+				);
+		
+		}
+
+		$this->db->insert_batch('txnquotdtl', $new); 
+		
+		if($this->db->affected_rows() > 0)
+		  return TRUE ;
+		else
+		  return FALSE; 
 	}
 
 	public function check_revisi($id)

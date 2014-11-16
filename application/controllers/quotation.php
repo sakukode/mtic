@@ -329,6 +329,7 @@ class Quotation extends CI_Controller {
 
         		$data = array(
 					'status' => TRUE,
+					'revisi' => 1,
 					'lastid' => $id
 				);
 
@@ -340,10 +341,10 @@ class Quotation extends CI_Controller {
 
 				$data = array(
 					'status' => TRUE,
+					'revisi' => 0,
 					'lastid' => $id
 				);	
-        	}
-        	
+        	}       	
 
 			echo json_encode($data);
         }
@@ -362,7 +363,20 @@ class Quotation extends CI_Controller {
 	{
 		//$data = $this->input->post('data',TRUE);
 		//echo print_r($data); exit();
-		$result = $this->m_quotation->update_detail();
+		$revisi = $this->input->post('rev',TRUE);
+
+		if($revisi == 1)
+		{
+			//create revisi quotation detail
+			$this->m_quotation->create_revisi_detail();
+		}
+		else
+		{
+			//update quotation detail
+			$result = $this->m_quotation->update_detail();
+		}
+		
+		
 
 		$this->session->set_flashdata('msgsuccess', 'Succesfully updated Quotation');
 

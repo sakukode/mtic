@@ -688,8 +688,6 @@ $("#form-quotation").submit(function(event) {
 
     var firstsCellArray=[];
     var secondCellArray=[];
-    var discAmount;
-    var discPercent;
 
     $.each( oTable.fnGetData(), function(i, row){
           secondCellArray.push(rowidArray[i]); // index 0
@@ -697,21 +695,8 @@ $("#form-quotation").submit(function(event) {
           secondCellArray.push(productidArray[i]); //index 2
           secondCellArray.push(row[3]); //index 3
           secondCellArray.push(row[4]); //index 4
-
-          if(row[5] == 'Amount') {
-           discAmount  = row[6];
-       }else {
-        discAmount = 0;
-    }
-
-    if(row[5] == 'Percent') {
-       discPercent = row[6];
-   }else {
-       discPercent = 0;
-   }
-
-          secondCellArray.push(discAmount); // index 5
-          secondCellArray.push(discPercent); // index 6
+          secondCellArray.push(row[5]); // index 5
+          secondCellArray.push(row[6]); // index 6
           secondCellArray.push(row[7]); //index 7
           secondCellArray.push(row[8]); //index 8
           secondCellArray.push(drawidArray[i]); //index 9
@@ -726,12 +711,12 @@ $("#form-quotation").submit(function(event) {
         /*optional stuff to do after success */
         if(data.status == true) {
             var lastid = data.lastid;
+            var statusRevisi = data.revisi;
             if(lastid != ''){
                 
-                $.post("<?php echo site_url('quotation/save_detail');?>",{data:firstsCellArray,quotationid:lastid},function(){
+                $.post("<?php echo site_url('quotation/update_detail');?>",{data:firstsCellArray,quotationid:lastid,rev:statusRevisi},function(){
                     location.reload();
                 }); 
-                
             }
         }else {
             var icon = "<i class='glyphicon glyphicon-remove-circle'></i> Error Process:";

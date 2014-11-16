@@ -29,6 +29,7 @@
             </div>
             <div class="box-content">
                 <!-- put your content here -->
+                <?php if($quotationhdr != null): ?>
                 <table>
                     <tr>
                         <td><strong>No</strong></td>
@@ -112,7 +113,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <?php
+                        <?php if($quotationdtl !=null):
                         $no = 1;
                         if($quotationdtl != null):
                             foreach($quotationdtl as $row):
@@ -128,6 +129,7 @@
                         <?php
                         ++$no;
                         endforeach;
+                        endif;
                         ?>
                         <tr rowspan="2">
                             <td colspan="3" rowspan="3"></td>
@@ -157,6 +159,11 @@
                     <a href="<?php echo site_url('quotation');?>" class="btn btn-default">Back to list</a>
                     <a href="" class="btn btn-success">Print Preview</a>
                 </p>
+                <?php
+                else:
+                    echo "<h3>No Data</h3>";
+                endif;
+                ?>
             </div>
         </div>
     </div>

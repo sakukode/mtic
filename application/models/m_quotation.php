@@ -2,6 +2,10 @@
 
 class M_quotation extends CI_Model {
 
+
+	/**
+		mengambil data group sales untuk combo box
+	**/
 	
 	public function get_groupsales($key)
 	{
@@ -95,11 +99,11 @@ class M_quotation extends CI_Model {
 
 	public function get_maxid()
 	{
-		$query = $this->db->select_max('TxnQuotHdrID')->get('txnquothdr');
+		$query = $this->db->select_max('noquotation')->get('log_quotation');
 
 		if($query->num_rows > 0)
 		{
-			$id = $query->row()->TxnQuotHdrID;
+			$id = $query->row()->noquotation;
 			$id++;
 			return $id;
 		}else
@@ -189,6 +193,13 @@ class M_quotation extends CI_Model {
 
 		$last_id = $this->db->insert_id($query);
 
+		$log = array(
+			'id'		 => null,
+			'noquotation'=> $no_array[0]
+		);
+
+		$this->db->insert('log_quotation',$log);		
+
 		if($last_id != null)
 		{
 			return $last_id;
@@ -207,24 +218,13 @@ class M_quotation extends CI_Model {
 		$data = array();
 
 		foreach($post as $key => $value){
-			
-			if($value[4] == 'amount') {
-				$percent = 0;
-				$amount  = $value[5];
-			}elseif($value[4] == 'percent') {
-				$percent = $value[5];
-				$amount = 0;
-			}else {
-				$percent = 0;
-				$amount  = 0;
-			}
 
 			$data[] = array(
 				'TxnQuotDtlID'  		=> null,
 				'TxnQuotDtlQty' 		=> $value[3],
 				'TxnQuotDtlUnitPrice'	=> $value[2],
-				'TxnQuotDtlDiscPrs'     => $percent,		
-				'TxnQuotDtlDiscAm'      => $amount,
+				'TxnQuotDtlDiscAm'    	=> $value[4],		
+				'TxnQuotDtlDiscPrs'     => $value[5],
 				'TxnQuotDtlTotAm'		=> $value[6],
 				'TxnQuotDtlRemarks'		=> $value[7],
 				'MstChasID'				=> $value[0],
@@ -260,17 +260,20 @@ class M_quotation extends CI_Model {
 							   ->from('txnquotdtl as a')
 							   ->join('mstproduct as b','b.MstProductID=a.MstProductID')
 							   ->where('a.TxnQuotHdrID',$id)
+							   ->where('a.deleted',0)
 							   ->get();
 
 			if($query2->num_rows() > 0)
 			{
 				$data['quotationdtl'] = $query2->result();
+			}else{
+				$data['quotationdtl'] = null;
 			}
 
 			return $data;
 		}else {
 
-			return null;
+			return $data =array('quotationhdr'=>null,'quotationdtl'=>null);
 		}
 	}
 
@@ -295,25 +298,34 @@ class M_quotation extends CI_Model {
 							   ->join('mstchas as c','c.MstChasID=a.MstChasID','LEFT')
 							   ->join('txndraw as d','d.TxnDrawID=a.TxnDrawID','LEFT')
 							   ->where('a.TxnQuotHdrID',$id)
+							   ->where('a.deleted',0)
 							   ->get();
 
 			if($query2->num_rows() > 0)
 			{
 				$data['quotationdtl'] = $query2->result();
+			}else{
+				$data['quotationdtl'] = null;
 			}
 
 			return $data;
 		}else {
 
-			return null;
+			return $data =array('quotationhdr'=>null,'quotationdtl'=>null);
 		}
 	}
 
 	public function delete($id)
 	{
-		$tables = array('txnquothdr', 'txnquotdtl');
+		$data = array(
+			'deleted' =>1
+		);
+
 		$this->db->where('TxnQuotHdrID', $id);
-		$this->db->delete($tables);	
+		$this->db->update('txnquothdr',$data);
+
+		$this->db->where('TxnQuotDtlID',$id);
+		$this->db->update('txnquotdtl',$data);	
 
 		if($this->db->affected_rows() > 0)
 		  return TRUE ;
@@ -324,12 +336,16 @@ class M_quotation extends CI_Model {
 
 	public function delete_many($data)
 	{
-		$tables = array('txnquothdr', 'txnquotdtl');
+		$deleted = array(
+			'deleted' => 1
+		);
 
 		foreach($data as $key => $value)
 		{
-			$this->db->where('TxnQuotHdrID', $value);
-			$this->db->delete($tables);	
+			$this->db->where('TxnQuotHdrID', $value)
+					 ->update('txnquothdr',$deleted);
+			$this->db->where('TxnQuotHdrID',$value)
+					 ->update('txnquotdtl',$deleted);
 		}
 
 		if($this->db->affected_rows() > 0)
@@ -436,6 +452,70 @@ class M_quotation extends CI_Model {
 		  return TRUE ;
 		else
 		  return FALSE; 
+	}
+
+	public function create_revisi()
+	{
+		$groupsales_id 	= $this->input->post('group-sales',TRUE);
+		$typeorder_id 	= $this->input->post('type-order',TRUE);
+		$date       	= $this->input->post('date-quotation',TRUE);
+		$customer_id	= $this->input->post('customer',TRUE);
+		$remarks		= $this->input->post('re',TRUE);
+		$sales_id		= $this->input->post('sales',TRUE);
+		$terms			= $this->input->post('terms',TRUE);
+		$no_array	 	= $this->input->post('no-revisi',TRUE);
+		$no 			= $no_array[0].'/'.$no_array[1].'/'.$no_array[2].'/'.$no_array[3].'/'.$no_array[4].'/'.$no_array[5];
+
+		$subtotal		= $this->input->post('sub-total',TRUE);
+		$discount		= $this->input->post('discount-hdr',TRUE);
+		$ppn 			= $this->input->post('ppn',TRUE);
+		$total 			= $this->input->post('total',TRUE);
+
+		$data = array(
+			'TxnQuotHdrID' 		=> null,
+			'TxnQuotHdrNo' 		=> strip_tags($no,ENT_QUOTES),
+			'TxnQuotHdrDate'	=> strip_tags($date,ENT_QUOTES),
+			'TxnQuotHdrTermsTxt'=> htmlspecialchars($terms,ENT_QUOTES,"UTF-8"),
+			'TxnQuotHdrDiscount'=> strip_tags($discount,ENT_QUOTES),
+			'TxnQuotHdrPpn'  	=> strip_tags($ppn,ENT_QUOTES),
+			'TxnQuotHdrRemarks' => strip_tags($remarks,ENT_QUOTES),
+			'TxnQuotHdrSubTotal'=> strip_tags($subtotal,ENT_QUOTES),
+			'TxnQuotHdrTotal'	=> strip_tags($total,ENT_QUOTES),
+			'MstCustID' 		=> strip_tags($customer_id,ENT_QUOTES),
+			'MstSalesPICID' 	=> strip_tags($sales_id,ENT_QUOTES),
+			'MstGRPSalesID' 	=> strip_tags($groupsales_id,ENT_QUOTES),
+			'MstTypeOrderID'	=> strip_tags($typeorder_id,ENT_QUOTES)
+		);
+
+		$query = $this->db->insert('txnquothdr',$data);
+
+		$last_id = $this->db->insert_id($query);
+
+		if($last_id != null)
+		{
+			return $last_id;
+		}
+		else
+		{
+			return null;
+		}	
+	}
+
+	public function check_revisi($id)
+	{
+		$query = $this->db->select('TxnQuotHdrNo')->where('TxnQuotHdrID',$id)->get('txnquothdr');
+
+		$str   = $query->row()->TxnQuotHdrNo;
+
+		$no_array = explode("/", $str);
+
+		$no = $no_array[0];
+
+		$query2 = $this->db->like('TxnQuotHdrNo',$no,'after')->from('txnquothdr');
+
+		$total = $query2->count_all_results();
+
+ 		return $total;
 	}
 
 }

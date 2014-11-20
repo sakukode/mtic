@@ -16,9 +16,30 @@
                         </li>
                         <li><a class="ajax-link" href="<?php echo site_url('template/galery');?>"><i class="glyphicon glyphicon-picture"></i><span> Gallery</span></a>
                         </li>
-                        <li><a class="ajax-link" href="<?php echo site_url('template/table');?>"><i
-                                    class="glyphicon glyphicon-align-justify"></i><span> Tables</span></a></li>
-                      
+                        <li>
+                            <a class="ajax-link" href="<?php echo site_url('template/table');?>"><i
+                            class="glyphicon glyphicon-align-justify"></i><span> Tables</span></a>
+                        </li>
+                        <li>
+                            <a class="ajax-link" href="<?php echo site_url('quotation');?>"><i
+                            class="glyphicon glyphicon-folder-open"></i><span> Quotation</span></a>
+                        </li>
+                        <li>
+                            <a class="ajax-link" href="<?php echo site_url('user');?>"><i
+                            class="glyphicon glyphicon-folder-open"></i><span> User</span></a>
+                        </li>   
+                        <li>
+                            <a class="ajax-link" href="<?php echo site_url('admin');?>"><i
+                            class="glyphicon glyphicon-folder-open"></i><span> Admin</span></a>
+                        </li>
+                         <li>
+                            <a class="ajax-link" href="<?php echo site_url('accounting');?>"><i
+                            class="glyphicon glyphicon-folder-open"></i><span> Accounting</span></a>
+                        </li>
+                         <li>
+                            <a class="ajax-link" href="<?php echo site_url('marketing');?>"><i
+                            class="glyphicon glyphicon-folder-open"></i><span> Marketing</span></a>
+                        </li>  
                         
                      
                        

@@ -308,7 +308,8 @@ $(function() {
     $('#ppn').number( true, 2, ',', '.'  );
     $('#discount-hdr').number( true, 2, ',', '.'  );
     $('#total').number( true, 2, ',', '.'  );
-    
+    $('#disc-amount').number( true, 2, ',', '.'  );
+
     /* Init Data Table */
 
     var oTable = $('#table-detail').dataTable({
@@ -316,7 +317,15 @@ $(function() {
         "sPaginationType": "bootstrap",
         "oLanguage": {
             "sLengthMenu": "_MENU_ records per page"
-        }
+        },
+        "aoColumnDefs":[{
+           "aTargets": [4],
+           "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+             var $currencyCell = $(nTd);
+             var fmValue = $currencyCell.text().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
+             $currencyCell.text(fmValue);
+           }
+        }]
     });
 
     $( "#table-detail tbody" ).on( "click", "tr", function() {

@@ -29,20 +29,18 @@ class Quotation extends CI_Controller {
 	public function get_all()
 	{
 		$this->load->library('datatables');
-		$this->datatables->select('TxnQuotHdrID,TxnQuotHdrNo,MstCustIDName,TxnQuotHdrDate,TxnQuotHdrTotal,MstApprID')
+		$this->datatables->select('TxnQuotHdrID,TxnQuotHdrNo,MstCustIDName,TxnQuotHdrDate,TxnQuotHdrTotal,MstApprID,deleted')
 						 ->from('txnquothdr')
 						 ->join('mstcust','mstcust.MstCustID=txnquothdr.MstCustID','LEFT')
-						 ->where('txnquothdr.deleted',0)
 						 ->edit_column('TxnQuotHdrID','<input type="checkbox" class="checkbox-quo" name="id[]" value="$1">','TxnQuotHdrID')
 						 ->edit_column('TxnQuotHdrTotal','Rp. $1','rupiah(TxnQuotHdrTotal)')
 						 ->edit_column('MstApprID','$1','check_approve(MstApprID)')
+						 ->edit_column('deleted','$1','check_status(deleted)')
 						 ->add_column('Action',
 				        	'<a href="'.site_url('quotation/view/$1').'" class="btn btn-xs btn-info">
 				        	Detail</a>
 				        	<a href="'.site_url('quotation/edit/$1').'" class="btn btn-xs btn-success">
-				        	Edit</a>  
-				        	<button class="btn btn-xs btn-danger btn-del" id=$1">
-				        	Delete','TxnQuotHdrID');
+				        	Edit</a>','TxnQuotHdrID');
 
 		echo $this->datatables->generate();
 
@@ -365,6 +363,8 @@ class Quotation extends CI_Controller {
 		//echo print_r($data); exit();
 		$revisi = $this->input->post('rev',TRUE);
 
+		echo print_r($this->input->post('data',TRUE));
+
 		if($revisi == 1)
 		{
 			//create revisi quotation detail
@@ -428,21 +428,21 @@ class Quotation extends CI_Controller {
 		
 	}
 
-	public function delete()
+	public function inactive()
 	{
 		$id =$_GET['id'];
 
 		if($id != '')
 		{
-			$result = $this->m_quotation->delete($id);
+			$result = $this->m_quotation->inactive($id);
 
 			if($result == TRUE)
 			{
-				$this->session->set_flashdata('msgsuccess', 'Succesfully deleted');
+				$this->session->set_flashdata('msgsuccess', 'Succesfully Changed Status');
 			}
 			else
 			{
-				$this->session->set_flashdata('msgerror', 'Failed deleted');
+				$this->session->set_flashdata('msgerror', 'Failed Process');
 			}
 			
 			$data = array(
@@ -463,21 +463,21 @@ class Quotation extends CI_Controller {
 		
 	}
 
-	public function delete_many()
+	public function inactive_many()
 	{
 		$data = $this->input->post('data',TRUE);
 
 		if($data != '')
 		{
-			$result = $this->m_quotation->delete_many($data);
+			$result = $this->m_quotation->inactive_many($data);
 
-			if($result == TRUE)
+			if($result)
 			{
-				$this->session->set_flashdata('msgsuccess', 'Succesfully deleted');
+				$this->session->set_flashdata('msgsuccess', 'Succesfully Changed Status');
 			}
 			else
 			{
-				$this->session->set_flashdata('msgerror', 'Failed deleted');
+				$this->session->set_flashdata('msgerror', 'Failed Process');
 			}
 			
 			$data = array(
@@ -491,7 +491,43 @@ class Quotation extends CI_Controller {
 		{
 			$data  = array(
 				'status' => FALSE,
-				'msg' => 'No ID Selected. Failed delete'
+				'msg' => 'No ID Selected. Failed Process'
+			);
+
+			echo json_encode($data);
+		}
+		
+	}
+
+	public function active_many()
+	{
+		$data = $this->input->post('data',TRUE);
+
+		if($data != '')
+		{
+			$result = $this->m_quotation->active_many($data);
+
+			if($result)
+			{
+				$this->session->set_flashdata('msgsuccess', 'Succesfully Changed Status');
+			}
+			else
+			{
+				$this->session->set_flashdata('msgerror', 'Failed Process');
+			}
+			
+			$data = array(
+				'status' => TRUE
+			);
+
+			echo json_encode($data);
+	
+		}
+		else
+		{
+			$data  = array(
+				'status' => FALSE,
+				'msg' => 'No ID Selected. Failed Process'
 			);
 
 			echo json_encode($data);

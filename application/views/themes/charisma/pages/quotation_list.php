@@ -40,7 +40,8 @@
                     <button class="btn btn-default">With Selected</button>
                     <button class="btn dropdown-toggle btn-default" data-toggle="dropdown"><span class="caret"></span></button>
                     <ul class="dropdown-menu">                        
-                        <li><a href="#" id="deleteall"><i class="glyphicon glyphicon-trash"></i> Delete</a></li>
+                        <li><a href="#" id="inactive"><i class="glyphicon glyphicon-ban-circle"></i> Set Inactive</a></li>
+                        <li><a href="#" id="active"><i class="glyphicon glyphicon-ok-circle"></i> Set Active</a></li>
                     </ul>
                 </div>
 
@@ -55,6 +56,7 @@
                     <th>Customer</th>
                     <th>Date</th>
                     <th>Amount</th>
+                    <th>Progress</th>
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
@@ -104,19 +106,19 @@
                     'bSortable' : false,
                     'aTargets' : [ 0,6 ]
                 },
-                { "sWidth": "160px", "aTargets": [ 6 ] }
+                { "sWidth": "160px", "aTargets": [ 7 ] }
             ]
         });
 
         /* proses delete row/baris */
         $( document ).on( "click", ".btn-del", function() {
 
-            var conf = confirm("Are you sure delete this data?");
+            var conf = confirm("Are you sure set Inactive this data?");
             var id = $(this).attr('id');
             if(conf){
                $.ajax({
                type: "GET",
-               url: "<?php echo site_url('quotation/delete');?>",
+               url: "<?php echo site_url('quotation/inactive');?>",
                dataType : "json",
                data: "id="+id,
                success: function(data){
@@ -130,11 +132,11 @@
             } 
         });
 
-        /* proses delete row/baris yang terpilih(selected checkbox) */
+        /* proses inactive row/baris yang terpilih(selected checkbox) */
 
-        $("#deleteall").click(function() {
+        $("#inactive").click(function() {
             /* Act on the event */
-            var conf = confirm("Are you sure delete this selected data?");
+            var conf = confirm("Are you sure set inactive this selected data?");
             
             if(conf){
                 var idArray = $('#quotation-table input[type=checkbox]:checked').map(function(_, el) {
@@ -142,7 +144,37 @@
                 }).get();
                 
                 if(idArray != ''){
-                        $.post("<?php echo site_url('quotation/delete_many');?>",{data:idArray},function(data){
+                        $.post("<?php echo site_url('quotation/inactive_many');?>",{data:idArray},function(data){
+                            if(data.status == true) {
+                               location.reload();
+                            }else if(data.status == false) {
+                               alert(data.msg);
+                               oTable.fnDraw();
+                            }else {
+                               alert("Error System"); 
+                               oTable.fnDraw();
+                            }  
+                        },"json");
+                }else {
+                    alert("Error!,No data selected");    
+                }
+
+            } 
+        });
+
+        /* proses active row/baris yang terpilih(selected checkbox) */
+
+        $("#active").click(function() {
+            /* Act on the event */
+            var conf = confirm("Are you sure set active this selected data?");
+            
+            if(conf){
+                var idArray = $('#quotation-table input[type=checkbox]:checked').map(function(_, el) {
+                    return $(el).val();
+                }).get();
+                
+                if(idArray != ''){
+                        $.post("<?php echo site_url('quotation/active_many');?>",{data:idArray},function(data){
                             if(data.status == true) {
                                location.reload();
                             }else if(data.status == false) {

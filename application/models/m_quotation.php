@@ -2,10 +2,6 @@
 
 class M_quotation extends CI_Model {
 
-
-	/**
-		mengambil data group sales untuk combo box
-	**/
 	
 	public function get_groupsales($key)
 	{
@@ -221,16 +217,17 @@ class M_quotation extends CI_Model {
 
 			$data[] = array(
 				'TxnQuotDtlID'  		=> null,
-				'TxnQuotDtlQty' 		=> $value[3],
-				'TxnQuotDtlUnitPrice'	=> $value[2],
-				'TxnQuotDtlDiscAm'    	=> $value[4],		
-				'TxnQuotDtlDiscPrs'     => $value[5],
-				'TxnQuotDtlTotAm'		=> $value[6],
-				'TxnQuotDtlRemarks'		=> $value[7],
+				'TxnQuotDtlQty' 		=> $value[4],
+				'TxnQuotSize'			=> $value[2],
+				'TxnQuotDtlUnitPrice'	=> $value[3],
+				'TxnQuotDtlDiscAm'    	=> $value[5],		
+				'TxnQuotDtlDiscPrs'     => $value[6],
+				'TxnQuotDtlTotAm'		=> $value[7],
+				'TxnQuotDtlRemarks'		=> $value[8],
 				'MstChasID'				=> $value[0],
 				'MstProductID'			=> $value[1],
 				'TxnQuotHdrID'			=> $quotation_id,
-				'TxnDrawID'				=> $value[8]
+				'TxnDrawID'				=> $value[9],
 			);
 		}
 
@@ -315,7 +312,7 @@ class M_quotation extends CI_Model {
 		}
 	}
 
-	public function delete($id)
+	public function inactive($id)
 	{
 		$data = array(
 			'deleted' =>1
@@ -334,10 +331,31 @@ class M_quotation extends CI_Model {
 
 	}
 
-	public function delete_many($data)
+	public function inactive_many($data)
 	{
 		$deleted = array(
 			'deleted' => 1
+		);
+
+		foreach($data as $key => $value)
+		{
+			$this->db->where('TxnQuotHdrID', $value)
+					 ->update('txnquothdr',$deleted);
+			$this->db->where('TxnQuotHdrID',$value)
+					 ->update('txnquotdtl',$deleted);
+		}
+
+		if($this->db->affected_rows() > 0)
+		  return TRUE ;
+		else
+		  return FALSE; 
+
+	}
+
+	public function active_many($data)
+	{
+		$deleted = array(
+			'deleted' => 0
 		);
 
 		foreach($data as $key => $value)
@@ -407,16 +425,17 @@ class M_quotation extends CI_Model {
 			{
 				$new = array(
 					'TxnQuotDtlID'  		=> null,
-					'TxnQuotDtlQty' 		=> $value[4],
-					'TxnQuotDtlUnitPrice'	=> $value[3],
-					'TxnQuotDtlDiscPrs'     => $value[6],		
-					'TxnQuotDtlDiscAm'      => $value[5],
-					'TxnQuotDtlTotAm'		=> $value[7],
-					'TxnQuotDtlRemarks'		=> $value[8],
+					'TxnQuotDtlQty' 		=> $value[5],
+					'TxnQuotSize'			=> $value[3],
+					'TxnQuotDtlUnitPrice'	=> $value[4],
+					'TxnQuotDtlDiscPrs'     => $value[7],		
+					'TxnQuotDtlDiscAm'      => $value[6],
+					'TxnQuotDtlTotAm'		=> $value[8],
+					'TxnQuotDtlRemarks'		=> $value[9],
 					'MstChasID'				=> $value[1],
 					'MstProductID'			=> $value[2],
 					'TxnQuotHdrID'			=> $quotation_id,
-					'TxnDrawID'				=> $value[9]
+					'TxnDrawID'				=> $value[10],
 				);
 
 				$this->db->insert('txnquotdtl',$new);
@@ -424,16 +443,17 @@ class M_quotation extends CI_Model {
 			else
 			{
 				$old = array(
-					'TxnQuotDtlQty' 		=> $value[4],
-					'TxnQuotDtlUnitPrice'	=> $value[3],
-					'TxnQuotDtlDiscPrs'     => $value[6],		
-					'TxnQuotDtlDiscAm'      => $value[5],
-					'TxnQuotDtlTotAm'		=> $value[7],
-					'TxnQuotDtlRemarks'		=> $value[8],
+					'TxnQuotDtlQty' 		=> $value[5],
+					'TxnQuotSize'			=> $value[3],
+					'TxnQuotDtlUnitPrice'	=> $value[4],
+					'TxnQuotDtlDiscPrs'     => $value[7],		
+					'TxnQuotDtlDiscAm'      => $value[6],
+					'TxnQuotDtlTotAm'		=> $value[8],
+					'TxnQuotDtlRemarks'		=> $value[9],
 					'MstChasID'				=> $value[1],
 					'MstProductID'			=> $value[2],
 					'TxnQuotHdrID'			=> $quotation_id,
-					'TxnDrawID'				=> $value[9]
+					'TxnDrawID'				=> $value[10],
 				);
 
 				$this->db->where('TxnQuotDtlID',$value[0]);
@@ -511,16 +531,17 @@ class M_quotation extends CI_Model {
 			
 				$new[] = array(
 					'TxnQuotDtlID'  		=> null,
-					'TxnQuotDtlQty' 		=> $value[4],
-					'TxnQuotDtlUnitPrice'	=> $value[3],
-					'TxnQuotDtlDiscPrs'     => $value[6],		
-					'TxnQuotDtlDiscAm'      => $value[5],
-					'TxnQuotDtlTotAm'		=> $value[7],
-					'TxnQuotDtlRemarks'		=> $value[8],
+					'TxnQuotDtlQty' 		=> $value[5],
+					'TxnQuotSize'			=> $value[3],
+					'TxnQuotDtlUnitPrice'	=> $value[4],
+					'TxnQuotDtlDiscPrs'     => $value[7],		
+					'TxnQuotDtlDiscAm'      => $value[6],
+					'TxnQuotDtlTotAm'		=> $value[8],
+					'TxnQuotDtlRemarks'		=> $value[9],
 					'MstChasID'				=> $value[1],
 					'MstProductID'			=> $value[2],
 					'TxnQuotHdrID'			=> $quotation_id,
-					'TxnDrawID'				=> $value[9]
+					'TxnDrawID'				=> $value[10],
 				);
 		
 		}
@@ -537,18 +558,25 @@ class M_quotation extends CI_Model {
 	{
 		$query = $this->db->select('TxnQuotHdrNo')->where('TxnQuotHdrID',$id)->get('txnquothdr');
 
-		$str   = $query->row()->TxnQuotHdrNo;
+		if($query->num_rows() == 1)
+		{
+			$str   = $query->row()->TxnQuotHdrNo;		
 
-		$no_array = explode("/", $str);
+			$no_array = explode("/", $str);
 
-		$no = $no_array[0];
+			$no = $no_array[0];
 
-		$query2 = $this->db->like('TxnQuotHdrNo',$no,'after')->from('txnquothdr');
+			$query2 = $this->db->like('TxnQuotHdrNo',$no,'after')->from('txnquothdr');
 
-		$total = $query2->count_all_results();
+			$total = $query2->count_all_results();
 
- 		return $total;
+			return $total;
+		}
+		
+
+ 		
 	}
+
 
 }
 

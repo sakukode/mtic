@@ -4,6 +4,8 @@
 
 <!-- library for cookie management -->
 <?php echo add_js('charisma/js/jquery.cookie');?>
+
+<?php echo add_js('charisma/js/jquery.number');?>
 <!-- calender plugin -->
 <?php echo add_js('charisma/bower_components/moment/min/moment.min');?>
 <?php echo add_js('charisma/bower_components/fullcalendar/dist/fullcalendar.min'); ?>

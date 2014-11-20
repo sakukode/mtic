@@ -27,16 +27,9 @@
                                 class="glyphicon glyphicon-remove"></i></a>
                             </div>
                         </div>
-                        <div class="box-content">
+                        <div class="box-content" tab-index="-1"> 
                             
-                            <?php if($quotationhdr != null): ?>
-                            <?php if($this->session->flashdata('msgsuccess')): ?>
-                            <div class="alert alert-success"><?php echo $this->session->flashdata('msgsuccess');?></div>
-                        <?php endif; ?>
-
-                        <?php if($this->session->flashdata('msgerror')): ?>
-                        <div class="alert alert-danger"><?php echo $this->session->flashdata('msgerror');?></div>
-                    <?php endif; ?>
+                           <?php if($quotationhdr != null): ?>
 
                     <h3>Master Quotation</h3>
                     
@@ -202,6 +195,7 @@
                                 <th>Type Product</th>
                                 <th>Type Chasis</th>
                                 <th>Item</th>
+                                <th>Size</th>    <!-- tambah script size -->
                                 <th>Price</th>
                                 <th>Qty</th>
                             </tr>
@@ -210,6 +204,7 @@
                             <tr>
                                 <td>
                                     <input type="hidden" name="rowNo" value="" id="rowNo"> 
+                                    <input type="hidden" name="detailid" id="detailid">
                                     <select class="form-control combo-detail-2" data-rel="chosen" data-placeholder="Choose a Option" id="type-product" name="type-product">
                                         <option value=""></option>
                                         <option value="PRODUCT">PRODUCT</option>
@@ -227,7 +222,11 @@
                                         <option value="" disabled selected>No Item</option>
                                     </select>
                                 </td>
-                                <td width="180px">
+                                 <!-- tambah script size -->
+                                <td width="120">
+                                    <input type="text" class="form-control input-detail" name="size" id="size">
+                                </td>
+                                <td width="120px">
                                     <input type="text" class="form-control input-number" name="item-price" id="item-price" value="0">
                                 </td>
                                 <td width="80px">
@@ -294,6 +293,7 @@
                                 <th>Type Product</th>
                                 <th>Type Chasis</th>
                                 <th>Item</th>
+                                <th>Size</th> <!-- tambah script size -->
                                 <th>Price</th>
                                 <th>Qty</th>
                                 <th>Disc Amount</th>
@@ -312,6 +312,7 @@
                                     <td><input type="hidden" value="<?php echo $row->TxnQuotDtlID;?>" name="rowid[]"><?php echo $row->MstProductTypeProduct;?></td>
                                     <td><input type="hidden" value="<?php echo $row->MstChasID;?>" name="chasisid[]"><?php echo $row->MStChasMaker.' '.$row->MStChasModel.' '.$row->MStChasType;?></td>
                                     <td><input type="hidden" value="<?php echo $row->MstProductID;?>" name="productid[]"><?php echo $row->MstProductType.' '.$row->MstProductVariant.' '.$row->MstProductGroupingSize;?></td>
+                                    <td><?php echo $row->TxnQuotSize;?></td> <!--tambah script size -->
                                     <td><?php echo $row->TxnQuotDtlUnitPrice;?></td>
                                     <td><?php echo $row->TxnQuotDtlQty;?></td>
                                     <td><?php echo $row->TxnQuotDtlDiscAm;?></td>
@@ -359,6 +360,14 @@
                         <div class="alert alert-danger" style="display:none" id="form-error">
                             
                         </div>
+                         
+                            <?php if($this->session->flashdata('msgsuccess')): ?>
+                            <div class="alert alert-success"><?php echo $this->session->flashdata('msgsuccess');?></div>
+                        <?php endif; ?>
+
+                        <?php if($this->session->flashdata('msgerror')): ?>
+                        <div class="alert alert-danger"><?php echo $this->session->flashdata('msgerror');?></div>
+                        <?php endif; ?>
                         <div class="box-footer">
                             <a href="<?php echo site_url('quotation');?>" class="btn btn-default">Back to list</a>
                             <button class="btn btn-success" type="submit">Update Quotation</button>
@@ -377,6 +386,15 @@
     <!-- detail transaction -->
     <script>
     $(function() {
+
+        // numbering format
+        //$('amount').number( true, 2 );
+        $('#item-price').number( true, 2 );
+        $('#amount').number( true, 2 );
+        $('#sub-total').number( true, 2 );
+        $('#ppn').number( true, 2 );
+        $('#discount-hdr').number( true, 2 );
+        $('#total').number( true, 2 );
 
         /* Init Data Table */
         var oTable = $('#table-detail').dataTable({
@@ -695,11 +713,12 @@ $("#form-quotation").submit(function(event) {
           secondCellArray.push(productidArray[i]); //index 2
           secondCellArray.push(row[3]); //index 3
           secondCellArray.push(row[4]); //index 4
-          secondCellArray.push(row[5]); // index 5
-          secondCellArray.push(row[6]); // index 6
+          secondCellArray.push(row[5]); //index 5
+          secondCellArray.push(row[6]); //index 6
           secondCellArray.push(row[7]); //index 7
           secondCellArray.push(row[8]); //index 8
-          secondCellArray.push(drawidArray[i]); //index 9
+          secondCellArray.push(row[9]); //index 9
+          secondCellArray.push(drawidArray[i]); //index 10
 
           firstsCellArray.push(secondCellArray);
 
@@ -767,7 +786,7 @@ $("#form-quotation").submit(function(event) {
                 itemID      = $(rowInput).find('input[name^="productid"]').val();
                 itemName    = $(rowInput).find('td:eq(2)').text();
                 drawID      = $(rowInput).find('input[name^="drawid"]').val();
-                drawName    = $(rowInput).find('td:eq(9)').text();
+                drawName    = $(rowInput).find('td:eq(10)').text();
 
                 
                 $("#detailid").val(rowid);
@@ -775,13 +794,14 @@ $("#form-quotation").submit(function(event) {
                 $("#type-product").val(typeProduct).trigger('chosen:updated');
                 $("#type-chasis option:selected").val(chasisID).text(chasisName).trigger('chosen:updated');
                 $("#item").append('<option value="'+itemID+'" selected>'+itemName+'</option>');
-                $("#item-price").val(row[3]);
-                $("#qty").val(row[4]);
+                $("#size").val(row[3]); //tambah script size
+                $("#item-price").val(row[4]);
+                $("#qty").val(row[5]);
                 $("#disc-option").val('').trigger('chosen:updated');
-                $("#disc-amount").val(row[5]);
-                $("#disc-percent").val(row[6]);
-                $("#amount").val(row[7]);
-                $("#remarks").val(row[8]);
+                $("#disc-amount").val(row[6]);
+                $("#disc-percent").val(row[7]);
+                $("#amount").val(row[8]);
+                $("#remarks").val(row[9]);
                 $("#drawing option:selected").val(drawID).text(drawName).trigger('chosen:updated');
 
                 $("#delete-row").attr('disabled', 'disabled');
@@ -881,6 +901,7 @@ function addList() {
         inputID+$('#type-product option:selected').text(),
         inputChasis+$('#type-chasis option:selected').text(),
         inputProduct+$('#item option:selected').text(),
+        $('#size').val(), //tambah script size
         $('#item-price').val(),
         $('#qty').val(),
         $('#disc-amount').val(),
@@ -915,6 +936,7 @@ function updateRow(rowIndex) {
         inputID+$('#type-product option:selected').text(),
         inputChasis+$('#type-chasis option:selected').text(),
         inputProduct+$('#item option:selected').text(),
+        $('#size').val(), //tambah script size
         $('#item-price').val(),
         $('#qty').val(),
         $('#disc-amount').val(),
@@ -937,7 +959,7 @@ function getTotal(){
   var tothrg = 0;
   
   $.each( oTable.fnGetData(), function(i, row){
-    tothrg += parseInt(row[7])
+    tothrg += parseInt(row[8])
 
 });
 

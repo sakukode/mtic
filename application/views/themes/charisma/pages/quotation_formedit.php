@@ -389,12 +389,13 @@
 
         // numbering format
         //$('amount').number( true, 2 );
-        $('#item-price').number( true, 2 );
-        $('#amount').number( true, 2 );
-        $('#sub-total').number( true, 2 );
-        $('#ppn').number( true, 2 );
-        $('#discount-hdr').number( true, 2 );
-        $('#total').number( true, 2 );
+           //$('amount').number( true, 2 );
+        $('#item-price').number( true, 2, ',', '.' );
+        $('#amount').number( true, 2, ',', '.'  );
+        $('#sub-total').number( true, 2, ',', '.'  );
+        $('#ppn').number( true, 2, ',', '.'  );
+        $('#discount-hdr').number( true, 2, ',', '.'  );
+        $('#total').number( true, 2, ',', '.'  );
 
         /* Init Data Table */
         var oTable = $('#table-detail').dataTable({

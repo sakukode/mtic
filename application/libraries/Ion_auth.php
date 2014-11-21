@@ -455,6 +455,13 @@ class Ion_auth
 		}
 	}
 
+	public function get_user_group($id,$key)
+	{
+		$groups = $this->ion_auth_model->get_users_groups($id)->row();
+
+		return $groups->$key;
+	}
+
 
 	/**
 	 * is_admin

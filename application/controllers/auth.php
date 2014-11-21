@@ -20,6 +20,7 @@ class Auth extends CI_Controller {
 
 	public function login()
 	{
+		if($this->ion_auth->logged_in()) redirect('dashboard');
 		$config = array(
 			array(
                      'field'   => 'username', 
@@ -45,7 +46,7 @@ class Auth extends CI_Controller {
 				//if the login is successful
 				//redirect them back to the home page
 					$this->session->set_flashdata('msgsuccess', $this->ion_auth->messages());
-					redirect('quotation', 'refresh');
+					redirect('dashboard', 'refresh');
 				}
 				else
 				{
@@ -73,6 +74,20 @@ class Auth extends CI_Controller {
 		//redirect them to the login page
 		$this->session->set_flashdata('message', $this->ion_auth->messages());
 		redirect('login', 'refresh');
+	}
+
+	public function direct()
+	{
+		$this->stencil->theme('charisma');
+		$this->stencil->slice('head');
+		$this->stencil->slice('navbar');
+		$this->stencil->slice('sidebar');
+		$this->stencil->slice('script');
+
+		$this->stencil->layout('default');
+		
+		if(!$this->ion_auth->logged_in()) redirect('login');
+		$this->stencil->paint('direct_page');
 	}
 
 }

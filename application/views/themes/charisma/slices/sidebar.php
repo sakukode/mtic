@@ -5,14 +5,19 @@
                     </div>
                     <ul class="nav nav-pills nav-stacked main-menu">
                         <li class="nav-header">Main</li>
+                        <?php
+                        $menu = menu_group();
+                        if($menu !=null):
+                        foreach($menu as $m):
+                        ?>
                         <li>
-                            <a class="ajax-link" href="<?php echo site_url('master');?>"><i
-                            class="glyphicon glyphicon-folder-open"></i><span> Master</span></a>
+                            <a class="ajax-link" href="<?php echo site_url($m->path);?>"><i
+                            class="<?php echo $m->icon;?>"></i><span> <?php echo $m->group_name;?></span></a>
                         </li>
-                         <li>
-                            <a class="ajax-link" href="<?php echo site_url('transaction');?>"><i
-                            class="glyphicon glyphicon-folder-open"></i><span> Transaction</span></a>
-                        </li>                         
+                        <?php
+                        endforeach;
+                        endif;
+                        ?>                     
                     </ul>
                     
                 </div>

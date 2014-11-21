@@ -15,7 +15,9 @@ if (!function_exists('check_approve'))
     		return "<span class='label-success label label-default'>Finish</span>";
     	}
 	}
-
+}
+if (!function_exists('check_status'))
+{
     function check_status($deleted)
     {
         switch ($deleted) {
@@ -30,3 +32,4 @@ if (!function_exists('check_approve'))
         }
     }
 }
+

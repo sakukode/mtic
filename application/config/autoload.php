@@ -64,7 +64,7 @@ $autoload['libraries'] = array('stencil','slices','database','session','form_val
 |	$autoload['helper'] = array('url', 'file');
 */
 
-$autoload['helper'] = array('stencil','url');
+$autoload['helper'] = array('stencil','url','app');
 
 
 /*
